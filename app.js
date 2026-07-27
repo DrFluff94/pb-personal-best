@@ -73,7 +73,7 @@ function openForm(type,id=null) {
       ${field("Reel name","name","text",item.name||"","required placeholder='Example: Shimano Curado DC'")}
       <div class="two-col">${field("Brand","brand","text",item.brand||"")}${field("Model","model","text",item.model||"")}</div>
       <div class="two-col">${selectField("Type","reelType",["Baitcaster","Spinning","Spincast","Fly"],item.reelType||"Baitcaster")}${field("Gear ratio","gearRatio","text",item.gearRatio||"","placeholder='7.4:1'")}</div>
-      ${field("Retrieve","retrieve","text",item.retrieve||"","placeholder='Right or Left')}
+      ${field("Retrieve","retrieve","text",item.retrieve||"","placeholder='Right or Left'")}
       ${textarea("Notes","notes",item.notes||"")}`;
   }
   if (type === "rig") {

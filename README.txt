@@ -15,3 +15,7 @@ GITHUB UPDATE:
 3. Choose to replace files with the same names.
 4. Commit the changes.
 5. Refresh the app in Safari. If the old screen remains, close the Home Screen app and reopen it.
+
+FIXED BUILD:
+- Corrected JavaScript syntax error that prevented all Add/Edit buttons from opening.
+- Updated service-worker cache name so iPhone loads the corrected files.
