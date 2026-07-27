@@ -13,134 +13,109 @@
   <title>PB — Personal Best</title>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <div class="brand">PB</div>
-        <div class="subtitle">PERSONAL BEST</div>
+<div class="app-shell">
+  <header class="topbar">
+    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST</div></div>
+    <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
+  </header>
+
+  <main>
+    <section class="screen active" data-screen="home">
+      <div class="hero">
+        <p class="eyebrow">YOUR FISHING COMPANION</p>
+        <h1>Gear organized.<br>Memories saved.</h1>
+        <p>Inventory at its core—rigs, catches, and trip-ready gear built around what you own.</p>
       </div>
-      <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
-    </header>
 
-    <main id="app">
-      <section class="screen active" data-screen="home">
-        <div class="hero">
-          <p class="eyebrow">YOUR FISHING COMPANION</p>
-          <h1>Gear organized.<br />Memories saved.</h1>
-          <p>Keep track of your tackle, boxes, catches, and shopping list—all in one place.</p>
-        </div>
-
-        <div class="stats-grid">
-          <button class="stat-card" data-go="tackle">
-            <span class="stat-number" id="tackleCount">0</span>
-            <span class="stat-label">Tackle Items</span>
-          </button>
-          <button class="stat-card" data-go="catches">
-            <span class="stat-number" id="catchCount">0</span>
-            <span class="stat-label">Catches</span>
-          </button>
-          <button class="stat-card" data-go="boxes">
-            <span class="stat-number" id="boxCount">0</span>
-            <span class="stat-label">Boxes</span>
-          </button>
-          <button class="stat-card" data-go="shopping">
-            <span class="stat-number" id="shoppingCount">0</span>
-            <span class="stat-label">To Buy</span>
-          </button>
-        </div>
-
-        <div class="section-heading">
-          <h2>Quick Add</h2>
-        </div>
-        <div class="quick-grid">
-          <button class="quick-card" data-open-form="tackle"><span>🎣</span>Add Tackle</button>
-          <button class="quick-card" data-open-form="catch"><span>🏆</span>Log Catch</button>
-          <button class="quick-card" data-open-form="box"><span>🧰</span>Add Box</button>
-          <button class="quick-card" data-open-form="shopping"><span>🛒</span>Add Item</button>
-        </div>
-
-        <div class="section-heading">
-          <h2>Recent Catches</h2>
-          <button class="text-button" data-go="catches">View all</button>
-        </div>
-        <div id="recentCatches" class="card-list empty-state">
-          <p>No catches yet. Your next personal best starts here.</p>
-        </div>
-      </section>
-
-      <section class="screen" data-screen="tackle">
-        <div class="page-head">
-          <div><p class="eyebrow">INVENTORY</p><h1>My Tackle</h1></div>
-          <button class="primary-small" data-open-form="tackle">+ Add</button>
-        </div>
-        <input class="search" id="tackleSearch" placeholder="Search tackle..." />
-        <div id="tackleList" class="card-list"></div>
-      </section>
-
-      <section class="screen" data-screen="boxes">
-        <div class="page-head">
-          <div><p class="eyebrow">STORAGE</p><h1>My Boxes</h1></div>
-          <button class="primary-small" data-open-form="box">+ Add</button>
-        </div>
-        <div id="boxList" class="card-list"></div>
-      </section>
-
-      <section class="screen" data-screen="catches">
-        <div class="page-head">
-          <div><p class="eyebrow">MEMORIES</p><h1>My Catches</h1></div>
-          <button class="primary-small" data-open-form="catch">+ Log</button>
-        </div>
-        <div id="catchList" class="card-list"></div>
-      </section>
-
-      <section class="screen" data-screen="shopping">
-        <div class="page-head">
-          <div><p class="eyebrow">RESTOCK</p><h1>Shopping List</h1></div>
-          <button class="primary-small" data-open-form="shopping">+ Add</button>
-        </div>
-        <div id="shoppingList" class="card-list"></div>
-      </section>
-    </main>
-
-    <nav class="bottom-nav">
-      <button class="nav-item active" data-go="home"><span>⌂</span>Home</button>
-      <button class="nav-item" data-go="tackle"><span>🎣</span>Tackle</button>
-      <button class="nav-item" data-go="boxes"><span>🧰</span>Boxes</button>
-      <button class="nav-item" data-go="catches"><span>🏆</span>Catches</button>
-      <button class="nav-item" data-go="shopping"><span>🛒</span>List</button>
-    </nav>
-  </div>
-
-  <dialog id="formDialog">
-    <form method="dialog" id="dynamicForm">
-      <div class="dialog-head">
-        <div>
-          <p class="eyebrow" id="formEyebrow">ADD</p>
-          <h2 id="formTitle">New Item</h2>
-        </div>
-        <button class="close-button" value="cancel" type="button" id="closeDialog">×</button>
+      <div class="stats-grid">
+        <button class="stat-card" data-go="tackle"><span class="stat-number" id="tackleCount">0</span><span class="stat-label">Tackle</span></button>
+        <button class="stat-card" data-go="rods"><span class="stat-number" id="rodCount">0</span><span class="stat-label">Rods</span></button>
+        <button class="stat-card" data-go="rigs"><span class="stat-number" id="rigCount">0</span><span class="stat-label">Rigs</span></button>
+        <button class="stat-card" data-go="catches"><span class="stat-number" id="catchCount">0</span><span class="stat-label">Catches</span></button>
       </div>
-      <div id="formFields"></div>
-      <button class="primary-button" type="submit">Save</button>
-    </form>
-  </dialog>
 
-  <dialog id="helpDialog">
-    <div class="install-help">
-      <div class="dialog-head">
-        <div><p class="eyebrow">IPHONE SETUP</p><h2>Add PB to Home Screen</h2></div>
-        <button class="close-button" type="button" id="closeHelp">×</button>
+      <div class="section-heading"><h2>Quick Add</h2></div>
+      <div class="quick-grid">
+        <button class="quick-card" data-open-form="tackle"><span>🎣</span>Add Tackle</button>
+        <button class="quick-card" data-open-form="rod"><span>📏</span>Add Rod</button>
+        <button class="quick-card" data-open-form="reel"><span>⚙️</span>Add Reel</button>
+        <button class="quick-card" data-open-form="rig"><span>🪝</span>Build Rig</button>
+        <button class="quick-card" data-open-form="catch"><span>🏆</span>Log Catch</button>
+        <button class="quick-card" data-open-form="shopping"><span>🛒</span>Add to List</button>
       </div>
-      <ol>
-        <li>Open this app in Safari.</li>
-        <li>Tap the Share button at the bottom of Safari.</li>
-        <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
-        <li>Tap <strong>Add</strong>.</li>
-      </ol>
-      <p class="muted">PB will then open like a normal app. Your information stays saved on this device.</p>
+
+      <div class="section-heading"><h2>Current Rigs</h2><button class="text-button" data-go="rigs">View all</button></div>
+      <div id="recentRigs" class="card-list"></div>
+    </section>
+
+    <section class="screen" data-screen="tackle">
+      <div class="page-head"><div><p class="eyebrow">INVENTORY</p><h1>My Tackle</h1></div><button class="primary-small" data-open-form="tackle">+ Add</button></div>
+      <input class="search" id="tackleSearch" placeholder="Search tackle..." />
+      <div id="tackleList" class="card-list"></div>
+    </section>
+
+    <section class="screen" data-screen="rods">
+      <div class="page-head"><div><p class="eyebrow">EQUIPMENT</p><h1>Rods & Reels</h1></div></div>
+      <div class="segmented">
+        <button class="segment active" data-equipment-tab="rods">Rods</button>
+        <button class="segment" data-equipment-tab="reels">Reels</button>
+      </div>
+      <div class="equipment-actions">
+        <button class="primary-small" data-open-form="rod">+ Add Rod</button>
+        <button class="primary-small secondary" data-open-form="reel">+ Add Reel</button>
+      </div>
+      <div id="rodList" class="card-list equipment-panel"></div>
+      <div id="reelList" class="card-list equipment-panel hidden"></div>
+    </section>
+
+    <section class="screen" data-screen="rigs">
+      <div class="page-head"><div><p class="eyebrow">CURRENT SETUPS</p><h1>My Rigs</h1></div><button class="primary-small" data-open-form="rig">+ Build</button></div>
+      <div id="rigList" class="card-list"></div>
+    </section>
+
+    <section class="screen" data-screen="boxes">
+      <div class="page-head"><div><p class="eyebrow">STORAGE</p><h1>My Boxes</h1></div><button class="primary-small" data-open-form="box">+ Add</button></div>
+      <div id="boxList" class="card-list"></div>
+    </section>
+
+    <section class="screen" data-screen="catches">
+      <div class="page-head"><div><p class="eyebrow">MEMORIES</p><h1>My Catches</h1></div><button class="primary-small" data-open-form="catch">+ Log</button></div>
+      <div id="catchList" class="card-list"></div>
+    </section>
+
+    <section class="screen" data-screen="shopping">
+      <div class="page-head"><div><p class="eyebrow">RESTOCK</p><h1>Shopping List</h1></div><button class="primary-small" data-open-form="shopping">+ Add</button></div>
+      <div id="shoppingList" class="card-list"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-go="home"><span>⌂</span>Home</button>
+    <button class="nav-item" data-go="tackle"><span>🎣</span>Tackle</button>
+    <button class="nav-item" data-go="rods"><span>📏</span>Gear</button>
+    <button class="nav-item" data-go="rigs"><span>🪝</span>Rigs</button>
+    <button class="nav-item" data-go="catches"><span>🏆</span>Catches</button>
+    <button class="nav-item" data-go="shopping"><span>🛒</span>List</button>
+  </nav>
+</div>
+
+<dialog id="formDialog">
+  <form method="dialog" id="dynamicForm">
+    <div class="dialog-head">
+      <div><p class="eyebrow" id="formEyebrow">ADD NEW</p><h2 id="formTitle">New Item</h2></div>
+      <button class="close-button" type="button" id="closeDialog">×</button>
     </div>
-  </dialog>
+    <div id="formFields"></div>
+    <button class="primary-button" type="submit">Save Changes</button>
+  </form>
+</dialog>
 
-  <script src="app.js"></script>
+<dialog id="helpDialog">
+  <div class="install-help">
+    <div class="dialog-head"><div><p class="eyebrow">IPHONE SETUP</p><h2>Add PB to Home Screen</h2></div><button class="close-button" type="button" id="closeHelp">×</button></div>
+    <ol><li>Open PB in Safari.</li><li>Tap Share.</li><li>Tap <strong>Add to Home Screen</strong>.</li><li>Tap <strong>Add</strong>.</li></ol>
+  </div>
+</dialog>
+<script src="app.js"></script>
 </body>
 </html>
