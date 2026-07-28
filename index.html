@@ -105,12 +105,12 @@ form, .install-help { padding: 22px; }
 }
 
 </style>
-  <title>PB — Personal Best v2.2</title>
+  <title>PB — Personal Best v2.3</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.2</small></div></div>
+    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.3</small></div></div>
     <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
   </header>
 
@@ -132,6 +132,7 @@ form, .install-help { padding: 22px; }
       <div class="section-heading"><h2>Quick Add</h2></div>
       <div class="quick-grid">
         <button class="quick-card" data-open-form="tackle"><span>🎣</span>Add Tackle</button>
+        <button class="quick-card" data-open-form="box"><span>🧰</span>Create Box</button>
         <button class="quick-card" data-open-form="rod"><span>📏</span>Add Rod</button>
         <button class="quick-card" data-open-form="reel"><span>⚙️</span>Add Reel</button>
         <button class="quick-card" data-open-form="rig"><span>🪝</span>Build Rig</button>
@@ -144,7 +145,7 @@ form, .install-help { padding: 22px; }
     </section>
 
     <section class="screen" data-screen="tackle">
-      <div class="page-head"><div><p class="eyebrow">INVENTORY</p><h1>My Tackle</h1></div><button class="primary-small" data-open-form="tackle">+ Add</button></div>
+      <div class="page-head"><div><p class="eyebrow">INVENTORY</p><h1>My Tackle</h1></div><div class="equipment-actions" style="margin:0"><button class="primary-small secondary" data-go="boxes">My Boxes</button><button class="primary-small" data-open-form="tackle">+ Add</button></div></div>
       <input class="search" id="tackleSearch" placeholder="Search tackle..." />
       <div id="tackleList" class="card-list"></div>
     </section>
@@ -169,7 +170,7 @@ form, .install-help { padding: 22px; }
     </section>
 
     <section class="screen" data-screen="boxes">
-      <div class="page-head"><div><p class="eyebrow">STORAGE</p><h1>My Boxes</h1></div><button class="primary-small" data-open-form="box">+ Add</button></div>
+      <div class="page-head"><div><p class="eyebrow">STORAGE</p><h1>My Boxes</h1></div><div class="equipment-actions" style="margin:0"><button class="primary-small secondary" data-go="tackle">Tackle</button><button class="primary-small" data-open-form="box">+ Add Box</button></div></div>
       <div id="boxList" class="card-list"></div>
     </section>
 
@@ -344,6 +345,14 @@ dynamicForm.addEventListener("submit", e => {
 
   if (editingId) {
     const idx = state[key].findIndex(x=>x.id===editingId);
+    if (activeForm === "box") {
+      const oldName = state[key][idx]?.name || "";
+      if (oldName && oldName !== data.name) {
+        state.tackle.forEach(t => {
+          if (t.box === oldName) t.box = data.name;
+        });
+      }
+    }
     state[key][idx] = {...state[key][idx],...data,id:editingId,updatedAt:Date.now()};
   } else {
     state[key].unshift({...data,id:makeId(),createdAt:Date.now()});
@@ -355,10 +364,14 @@ dynamicForm.addEventListener("submit", e => {
 function editItem(type,id){ openForm(type,id); }
 function deleteItem(collection,id){
   if (!confirm("Delete this item?")) return;
+  const deleted = state[collection].find(x=>x.id===id);
   state[collection] = state[collection].filter(x=>x.id!==id);
   if (collection==="rods") state.rigs.forEach(r=>{if(r.rodId===id) r.rodId="";});
   if (collection==="reels") state.rigs.forEach(r=>{if(r.reelId===id) r.reelId="";});
   if (collection==="tackle") state.rigs.forEach(r=>{if(r.tackleId===id) r.tackleId="";});
+  if (collection==="boxes" && deleted) {
+    state.tackle.forEach(t=>{if(t.box===deleted.name) t.box="Unassigned";});
+  }
   save();
 }
 function toggleShopping(id){ const x=state.shopping.find(i=>i.id===id); if(x)x.done=!x.done; save(); }
@@ -396,7 +409,7 @@ function renderRigs(){
 }
 function renderBoxes(){
   const el=document.getElementById("boxList");
-  if(!state.boxes.length)return empty(el,"No tackle boxes saved yet.");
+  if(!state.boxes.length)return empty(el,"No tackle boxes saved yet. Tap + Add Box to create one.");
   el.innerHTML=state.boxes.map(b=>`<div class="item-card"><div class="item-icon">🧰</div><div class="item-content"><p class="item-title">${escapeHtml(b.name)}</p><div class="item-meta">${state.tackle.filter(t=>t.box===b.name).length} tackle items${b.location?" • "+escapeHtml(b.location):""}</div></div>${actions("box","boxes",b.id)}</div>`).join("");
 }
 function renderCatches(){
