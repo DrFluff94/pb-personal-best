@@ -104,13 +104,24 @@ form, .install-help { padding: 22px; }
   .nav-item { font-size:9px; }
 }
 
+
+.photo-field input { padding:10px; background:#f7faf8; }
+.photo-preview { width:100%; max-height:210px; object-fit:cover; border-radius:14px; margin-top:8px; display:none; }
+.item-photo { width:72px; height:72px; border-radius:14px; object-fit:cover; flex:0 0 72px; background:#e7ece9; }
+.pb-card { border:2px solid rgba(179,224,59,.55); }
+.pb-banner { display:inline-flex; align-items:center; gap:5px; background:var(--lime); color:var(--green); border-radius:999px; padding:4px 9px; font-size:10px; font-weight:900; margin-top:6px; }
+.pb-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.pb-summary { background:white; border-radius:18px; padding:14px; box-shadow:var(--shadow); }
+.pb-summary strong { display:block; font-size:20px; color:var(--green); margin-top:4px; }
+@media (max-width:390px) { .item-photo { width:62px; height:62px; flex-basis:62px; } }
+
 </style>
-  <title>PB — Personal Best v2.3</title>
+  <title>PB — Personal Best v2.4</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.3</small></div></div>
+    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.4</small></div></div>
     <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
   </header>
 
@@ -175,8 +186,15 @@ form, .install-help { padding: 22px; }
     </section>
 
     <section class="screen" data-screen="catches">
-      <div class="page-head"><div><p class="eyebrow">MEMORIES</p><h1>My Catches</h1></div><button class="primary-small" data-open-form="catch">+ Log</button></div>
+      <div class="page-head"><div><p class="eyebrow">MEMORIES</p><h1>My Catches</h1></div><div class="equipment-actions" style="margin:0"><button class="primary-small secondary" data-go="personal-bests">Personal Bests</button><button class="primary-small" data-open-form="catch">+ Log</button></div></div>
       <div id="catchList" class="card-list"></div>
+    </section>
+
+    <section class="screen" data-screen="personal-bests">
+      <div class="page-head"><div><p class="eyebrow">RECORD BOOK</p><h1>Personal Bests</h1></div><button class="primary-small secondary" data-go="catches">All Catches</button></div>
+      <div id="pbOverview" class="pb-grid"></div>
+      <div class="section-heading"><h2>Best by Species</h2></div>
+      <div id="personalBestList" class="card-list"></div>
     </section>
 
     <section class="screen" data-screen="shopping">
@@ -224,6 +242,94 @@ if (!saved) {
 const state = saved || { tackle:[], boxes:[], catches:[], shopping:[], rods:[], reels:[], rigs:[] };
 ["tackle","boxes","catches","shopping","rods","reels","rigs"].forEach(k => state[k] ||= []);
 
+const PHOTO_DB = "pb-personal-best-photos";
+const PHOTO_STORE = "photos";
+let photoDbPromise = null;
+
+function openPhotoDb() {
+  if (!("indexedDB" in window)) return Promise.resolve(null);
+  if (photoDbPromise) return photoDbPromise;
+  photoDbPromise = new Promise((resolve, reject) => {
+    const request = indexedDB.open(PHOTO_DB, 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(PHOTO_STORE)) db.createObjectStore(PHOTO_STORE);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+  return photoDbPromise;
+}
+async function putPhoto(key, blob) {
+  const db = await openPhotoDb();
+  if (!db) return;
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction(PHOTO_STORE, "readwrite");
+    tx.objectStore(PHOTO_STORE).put(blob, key);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function getPhoto(key) {
+  if (!key) return null;
+  const db = await openPhotoDb();
+  if (!db) return null;
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(PHOTO_STORE, "readonly");
+    const req = tx.objectStore(PHOTO_STORE).get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function deletePhoto(key) {
+  if (!key) return;
+  const db = await openPhotoDb();
+  if (!db) return;
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction(PHOTO_STORE, "readwrite");
+    tx.objectStore(PHOTO_STORE).delete(key);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function compressPhoto(file) {
+  let bitmap;
+  if ("createImageBitmap" in window) {
+    bitmap = await createImageBitmap(file);
+  } else {
+    bitmap = await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  const maxSide = 1000;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  if (typeof bitmap.close === "function") bitmap.close();
+  return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.76));
+}
+async function hydratePhotos(root=document) {
+  const nodes = [...root.querySelectorAll("[data-photo-key]")];
+  await Promise.all(nodes.map(async img => {
+    const key = img.dataset.photoKey;
+    try {
+      const blob = await getPhoto(key);
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      img.src = url;
+      img.onload = () => URL.revokeObjectURL(url);
+      img.style.display = "";
+    } catch (err) { console.warn("Photo load skipped", err); }
+  }));
+}
+
+
 let activeForm = null;
 let editingId = null;
 
@@ -244,6 +350,8 @@ const dynamicForm = document.getElementById("dynamicForm");
 const formFields = document.getElementById("formFields");
 
 const field = (label,name,type="text",value="",extra="") => `<div class="field"><label for="${name}">${label}</label><input id="${name}" name="${name}" type="${type}" value="${escapeAttr(value)}" ${extra}></div>`;
+const photoField = (item={}) => `<div class="field photo-field"><label for="photo">Photo</label><input id="photo" name="photo" type="file" accept="image/*" capture="environment"><img id="photoPreview" class="photo-preview" alt="Selected photo preview"><p class="muted">${item.photoKey ? "Choose a new photo to replace the current one." : "Take a photo or choose one from your library."}</p></div>`;
+
 const textarea = (label,name,value="") => `<div class="field"><label for="${name}">${label}</label><textarea id="${name}" name="${name}">${escapeHtml(value)}</textarea></div>`;
 const selectField = (label,name,options,value="") => `<div class="field"><label for="${name}">${label}</label><select id="${name}" name="${name}">${options.map(o => {
   const v = typeof o === "string" ? o : o.value;
@@ -272,6 +380,7 @@ function openForm(type,id=null) {
       <div class="two-col">${field("Brand","brand","text",item.brand||"")}${field("Color / Size","details","text",item.details||"")}</div>
       ${selectField("Stored in","box",boxes,item.box||"Unassigned")}
       ${textarea("Notes","notes",item.notes||"")}
+      ${photoField(item)}
       <p class="muted">Set quantity to 0 if the lure or hook was lost, or delete it completely.</p>`;
   }
   if (type === "rod") {
@@ -281,7 +390,8 @@ function openForm(type,id=null) {
       <div class="two-col">${field("Length","length","text",item.length||"","placeholder=\"7'3&quot;\"")}${selectField("Power","power",["Ultra Light","Light","Medium Light","Medium","Medium Heavy","Heavy","Extra Heavy"],item.power||"Medium Heavy")}</div>
       ${selectField("Action","action",["Slow","Moderate","Moderate Fast","Fast","Extra Fast"],item.action||"Fast")}
       ${field("Best techniques","techniques","text",item.techniques||"","placeholder='Jigs, spinnerbaits, Texas rigs'")}
-      ${textarea("Notes","notes",item.notes||"")}`;
+      ${textarea("Notes","notes",item.notes||"")}
+      ${photoField(item)}`;
   }
   if (type === "reel") {
     formFields.innerHTML = `
@@ -289,7 +399,8 @@ function openForm(type,id=null) {
       <div class="two-col">${field("Brand","brand","text",item.brand||"")}${field("Model","model","text",item.model||"")}</div>
       <div class="two-col">${selectField("Type","reelType",["Baitcaster","Spinning","Spincast","Fly"],item.reelType||"Baitcaster")}${field("Gear ratio","gearRatio","text",item.gearRatio||"","placeholder='7.4:1'")}</div>
       ${field("Retrieve","retrieve","text",item.retrieve||"","placeholder='Right or Left'")}
-      ${textarea("Notes","notes",item.notes||"")}`;
+      ${textarea("Notes","notes",item.notes||"")}
+      ${photoField(item)}`;
   }
   if (type === "rig") {
     const rods = [{value:"",text:"Choose rod"},...state.rods.map(r=>({value:r.id,text:r.name}))];
@@ -302,7 +413,8 @@ function openForm(type,id=null) {
       <div class="two-col">${field("Line brand / type","line","text",item.line||"","placeholder='Seaguar fluorocarbon'")}${field("Line strength","lineStrength","text",item.lineStrength||"","placeholder='15 lb'")}</div>
       ${selectField("Tied-on lure","tackleId",tackle,item.tackleId||"")}
       ${field("Technique","technique","text",item.technique||"","placeholder='Spinnerbait, jig, finesse...'")}
-      ${textarea("Notes","notes",item.notes||"")}`;
+      ${textarea("Notes","notes",item.notes||"")}
+      ${photoField(item)}`;
   }
   if (type === "box") {
     formFields.innerHTML = `${field("Box name","name","text",item.name||"","required")}${field("Location","location","text",item.location||"")}${textarea("Notes","notes",item.notes||"")}`;
@@ -316,20 +428,34 @@ function openForm(type,id=null) {
       ${field("Location","location","text",item.location||"")}
       ${selectField("Rig used","rigId",rigs,item.rigId||"")}
       ${field("Lure used","lure","text",item.lure||"")}
-      ${textarea("Notes","notes",item.notes||"")}`;
+      ${textarea("Notes","notes",item.notes||"")}
+      ${photoField(item)}`;
   }
   if (type === "shopping") {
     formFields.innerHTML = `${field("Item","name","text",item.name||"","required")}<div class="two-col">${field("Quantity","quantity","number",item.quantity??1,"min='1'")}${field("Estimated price","price","number",item.price??"","step='0.01' min='0'")}</div>${textarea("Store / Notes","notes",item.notes||"")}`;
   }
   formDialog.showModal();
+  const photoInput = document.getElementById("photo");
+  if (photoInput) {
+    photoInput.addEventListener("change", () => {
+      const file = photoInput.files?.[0];
+      const preview = document.getElementById("photoPreview");
+      if (!file || !preview) return;
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    });
+  }
 }
 
 document.querySelectorAll("[data-open-form]").forEach(b => b.addEventListener("click",()=>openForm(b.dataset.openForm)));
 document.getElementById("closeDialog").addEventListener("click",()=>formDialog.close());
 
-dynamicForm.addEventListener("submit", e => {
+dynamicForm.addEventListener("submit", async e => {
   e.preventDefault();
-  const data = Object.fromEntries(new FormData(dynamicForm).entries());
+  const formData = new FormData(dynamicForm);
+  const photoFile = formData.get("photo");
+  formData.delete("photo");
+  const data = Object.fromEntries(formData.entries());
   const map = {tackle:"tackle",box:"boxes",catch:"catches",shopping:"shopping",rod:"rods",reel:"reels",rig:"rigs"};
   const key = map[activeForm];
 
@@ -343,6 +469,8 @@ dynamicForm.addEventListener("submit", e => {
     data.length = data.length ? Number(data.length) : null;
   }
 
+  let itemId = editingId || makeId();
+  let existing = editingId ? state[key].find(x=>x.id===editingId) : null;
   if (editingId) {
     const idx = state[key].findIndex(x=>x.id===editingId);
     if (activeForm === "box") {
@@ -353,18 +481,38 @@ dynamicForm.addEventListener("submit", e => {
         });
       }
     }
-    state[key][idx] = {...state[key][idx],...data,id:editingId,updatedAt:Date.now()};
+    state[key][idx] = {...state[key][idx],...data,id:itemId,updatedAt:Date.now()};
   } else {
-    state[key].unshift({...data,id:makeId(),createdAt:Date.now()});
+    state[key].unshift({...data,id:itemId,createdAt:Date.now()});
   }
+
+  if (photoFile && photoFile.size && ["tackle","rod","reel","rig","catch"].includes(activeForm)) {
+    try {
+      const photoKey = `${activeForm}:${itemId}`;
+      const blob = await compressPhoto(photoFile);
+      if (blob) {
+        await putPhoto(photoKey, blob);
+        const target = state[key].find(x=>x.id===itemId);
+        if (target) target.photoKey = photoKey;
+      }
+    } catch (err) {
+      alert("The item was saved, but the photo could not be added.");
+      console.warn("Photo save failed", err);
+    }
+  } else if (existing?.photoKey) {
+    const target = state[key].find(x=>x.id===itemId);
+    if (target) target.photoKey = existing.photoKey;
+  }
+
   formDialog.close();
   save();
 });
 
 function editItem(type,id){ openForm(type,id); }
-function deleteItem(collection,id){
+async function deleteItem(collection,id){
   if (!confirm("Delete this item?")) return;
   const deleted = state[collection].find(x=>x.id===id);
+  if (deleted?.photoKey) await deletePhoto(deleted.photoKey);
   state[collection] = state[collection].filter(x=>x.id!==id);
   if (collection==="rods") state.rigs.forEach(r=>{if(r.rodId===id) r.rodId="";});
   if (collection==="reels") state.rigs.forEach(r=>{if(r.reelId===id) r.reelId="";});
@@ -376,6 +524,12 @@ function deleteItem(collection,id){
 }
 function toggleShopping(id){ const x=state.shopping.find(i=>i.id===id); if(x)x.done=!x.done; save(); }
 function empty(el,text){ el.innerHTML=`<div class="empty-state"><p>${text}</p></div>`; }
+function photoTag(item, fallback="🎣") {
+  return item.photoKey
+    ? `<img class="item-photo" data-photo-key="${escapeAttr(item.photoKey)}" alt="${escapeAttr(item.name || item.species || "Photo")}" style="display:none">`
+    : `<div class="item-icon">${fallback}</div>`;
+}
+
 function actions(type,collection,id){ return `<div class="item-actions"><button class="mini-btn" onclick="editItem('${type}','${id}')">Edit</button><button class="mini-btn danger" onclick="deleteItem('${collection}','${id}')">Delete</button></div>`; }
 
 function renderTackle(){
@@ -383,23 +537,23 @@ function renderTackle(){
   const items=state.tackle.filter(i=>Object.values(i).join(" ").toLowerCase().includes(q));
   const el=document.getElementById("tackleList");
   if(!items.length)return empty(el,q?"No matches.":"No tackle saved yet.");
-  el.innerHTML=items.map(i=>`<div class="item-card"><div class="item-icon">🎣</div><div class="item-content"><p class="item-title">${escapeHtml(i.name)} <span class="item-meta">×${i.quantity}</span></p><div class="item-meta">${escapeHtml([i.category,i.brand,i.details].filter(Boolean).join(" • "))}</div><div class="item-meta">${i.box&&i.box!=="Unassigned"?"Stored in "+escapeHtml(i.box):"No box assigned"}</div>${i.quantity===0?`<span class="rig-badge warning">Out / Lost</span>`:""}</div>${actions("tackle","tackle",i.id)}</div>`).join("");
+  el.innerHTML=items.map(i=>`<div class="item-card">${photoTag(i,"🎣")}<div class="item-content"><p class="item-title">${escapeHtml(i.name)} <span class="item-meta">×${i.quantity}</span></p><div class="item-meta">${escapeHtml([i.category,i.brand,i.details].filter(Boolean).join(" • "))}</div><div class="item-meta">${i.box&&i.box!=="Unassigned"?"Stored in "+escapeHtml(i.box):"No box assigned"}</div>${i.quantity===0?`<span class="rig-badge warning">Out / Lost</span>`:""}</div>${actions("tackle","tackle",i.id)}</div>`).join("");
 }
 
 function renderRods(){
   const el=document.getElementById("rodList");
   if(!state.rods.length)return empty(el,"No rods saved yet.");
-  el.innerHTML=state.rods.map(r=>`<div class="item-card"><div class="item-icon">📏</div><div class="item-content"><p class="item-title">${escapeHtml(r.name)}</p><div class="item-meta">${escapeHtml([r.length,r.power,r.action].filter(Boolean).join(" • "))}</div><div class="item-meta">${escapeHtml(r.techniques||"")}</div></div>${actions("rod","rods",r.id)}</div>`).join("");
+  el.innerHTML=state.rods.map(r=>`<div class="item-card">${photoTag(r,"📏")}<div class="item-content"><p class="item-title">${escapeHtml(r.name)}</p><div class="item-meta">${escapeHtml([r.length,r.power,r.action].filter(Boolean).join(" • "))}</div><div class="item-meta">${escapeHtml(r.techniques||"")}</div></div>${actions("rod","rods",r.id)}</div>`).join("");
 }
 function renderReels(){
   const el=document.getElementById("reelList");
   if(!state.reels.length)return empty(el,"No reels saved yet.");
-  el.innerHTML=state.reels.map(r=>`<div class="item-card"><div class="item-icon">⚙️</div><div class="item-content"><p class="item-title">${escapeHtml(r.name)}</p><div class="item-meta">${escapeHtml([r.reelType,r.gearRatio,r.retrieve].filter(Boolean).join(" • "))}</div></div>${actions("reel","reels",r.id)}</div>`).join("");
+  el.innerHTML=state.reels.map(r=>`<div class="item-card">${photoTag(r,"⚙️")}<div class="item-content"><p class="item-title">${escapeHtml(r.name)}</p><div class="item-meta">${escapeHtml([r.reelType,r.gearRatio,r.retrieve].filter(Boolean).join(" • "))}</div></div>${actions("reel","reels",r.id)}</div>`).join("");
 }
 function nameBy(list,id){ return list.find(x=>x.id===id)?.name || ""; }
 function rigCard(r){
   const rod=nameBy(state.rods,r.rodId), reel=nameBy(state.reels,r.reelId), lure=nameBy(state.tackle,r.tackleId);
-  return `<div class="item-card"><div class="item-icon">🪝</div><div class="item-content"><p class="item-title">${escapeHtml(r.name)}</p><div class="item-meta">${escapeHtml([rod,reel].filter(Boolean).join(" + ")||"Rod/reel not assigned")}</div><div class="item-meta">${escapeHtml([r.lineStrength,r.line,r.technique].filter(Boolean).join(" • "))}</div>${lure?`<span class="rig-badge">Tied on: ${escapeHtml(lure)}</span>`:`<span class="rig-badge warning">No lure tied on</span>`}</div>${actions("rig","rigs",r.id)}</div>`;
+  return `<div class="item-card">${photoTag(r,"🪝")}<div class="item-content"><p class="item-title">${escapeHtml(r.name)}</p><div class="item-meta">${escapeHtml([rod,reel].filter(Boolean).join(" + ")||"Rod/reel not assigned")}</div><div class="item-meta">${escapeHtml([r.lineStrength,r.line,r.technique].filter(Boolean).join(" • "))}</div>${lure?`<span class="rig-badge">Tied on: ${escapeHtml(lure)}</span>`:`<span class="rig-badge warning">No lure tied on</span>`}</div>${actions("rig","rigs",r.id)}</div>`;
 }
 function renderRigs(){
   const el=document.getElementById("rigList");
@@ -412,10 +566,36 @@ function renderBoxes(){
   if(!state.boxes.length)return empty(el,"No tackle boxes saved yet. Tap + Add Box to create one.");
   el.innerHTML=state.boxes.map(b=>`<div class="item-card"><div class="item-icon">🧰</div><div class="item-content"><p class="item-title">${escapeHtml(b.name)}</p><div class="item-meta">${state.tackle.filter(t=>t.box===b.name).length} tackle items${b.location?" • "+escapeHtml(b.location):""}</div></div>${actions("box","boxes",b.id)}</div>`).join("");
 }
+function normalizedSpecies(value=""){ return value.trim().toLowerCase(); }
+function bestCatchMap(){
+  const map = new Map();
+  state.catches.forEach(c => {
+    const key = normalizedSpecies(c.species);
+    if (!key) return;
+    const score = c.weight != null ? Number(c.weight) * 100000 : Number(c.length || 0);
+    const current = map.get(key);
+    if (!current || score > current.score || (score === current.score && String(c.date||"") > String(current.catch.date||""))) {
+      map.set(key,{catch:c,score});
+    }
+  });
+  return map;
+}
 function renderCatches(){
   const el=document.getElementById("catchList");
   if(!state.catches.length)return empty(el,"No catches logged yet.");
-  el.innerHTML=state.catches.map(c=>`<div class="item-card"><div class="item-icon">🏆</div><div class="item-content"><p class="item-title">${escapeHtml(c.species)}</p><div class="item-meta">${escapeHtml([[c.weight?c.weight+" lb":"",c.length?c.length+" in":""].filter(Boolean).join(" • "),c.location,c.date].filter(Boolean).join(" • "))}</div>${c.rigId?`<div class="item-meta">Rig: ${escapeHtml(nameBy(state.rigs,c.rigId)||"Deleted rig")}</div>`:""}</div>${actions("catch","catches",c.id)}</div>`).join("");
+  const bests = bestCatchMap();
+  el.innerHTML=state.catches.map(c=>{
+    const isPb = bests.get(normalizedSpecies(c.species))?.catch.id === c.id;
+    return `<div class="item-card ${isPb?"pb-card":""}">${photoTag(c,"🏆")}<div class="item-content"><p class="item-title">${escapeHtml(c.species)}</p><div class="item-meta">${escapeHtml([[c.weight?c.weight+" lb":"",c.length?c.length+" in":""].filter(Boolean).join(" • "),c.location,c.date].filter(Boolean).join(" • "))}</div>${c.rigId?`<div class="item-meta">Rig: ${escapeHtml(nameBy(state.rigs,c.rigId)||"Deleted rig")}</div>`:""}${isPb?`<span class="pb-banner">🏆 Personal Best</span>`:""}</div>${actions("catch","catches",c.id)}</div>`;
+  }).join("");
+}
+function renderPersonalBests(){
+  const list = document.getElementById("personalBestList");
+  const overview = document.getElementById("pbOverview");
+  const bests = [...bestCatchMap().values()].map(x=>x.catch).sort((a,b)=>a.species.localeCompare(b.species));
+  overview.innerHTML = `<div class="pb-summary"><span class="item-meta">Species tracked</span><strong>${bests.length}</strong></div><div class="pb-summary"><span class="item-meta">Total catches</span><strong>${state.catches.length}</strong></div>`;
+  if(!bests.length) return empty(list,"Log a catch with a species and weight or length to begin your record book.");
+  list.innerHTML = bests.map(c=>`<div class="item-card pb-card">${photoTag(c,"🏆")}<div class="item-content"><p class="item-title">${escapeHtml(c.species)}</p><div class="item-meta">${escapeHtml([[c.weight?c.weight+" lb":"",c.length?c.length+" in":""].filter(Boolean).join(" • "),c.location,c.date].filter(Boolean).join(" • "))}</div><span class="pb-banner">🏆 Current PB</span></div><button class="mini-btn" onclick="go('catches')">Catches</button></div>`).join("");
 }
 function renderShopping(){
   const el=document.getElementById("shoppingList");
@@ -428,7 +608,7 @@ function renderStats(){
   document.getElementById("rigCount").textContent=state.rigs.length;
   document.getElementById("catchCount").textContent=state.catches.length;
 }
-function renderAll(){renderStats();renderTackle();renderRods();renderReels();renderRigs();renderBoxes();renderCatches();renderShopping();}
+function renderAll(){renderStats();renderTackle();renderRods();renderReels();renderRigs();renderBoxes();renderCatches();renderPersonalBests();renderShopping();hydratePhotos();}
 function makeId(){
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
   return "pb-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,10);
