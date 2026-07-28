@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="PB" />
-  <link rel="apple-touch-icon" href="icon-192.png?v=26" />
+  <link rel="apple-touch-icon" href="icon-192.png?v=30" />
   <style>
 
 :root {
@@ -122,45 +122,167 @@ form, .install-help { padding: 22px; }
 .photo-choice span { display:flex; align-items:center; justify-content:center; min-height:46px; border-radius:12px; background:#eef3f0; border:1px solid #d8e0dc; color:var(--green); font-weight:850; text-align:center; padding:8px; }
 .photo-choice input:focus + span { outline:3px solid rgba(179,224,59,.45); }
 
+
+/* PB v3 dashboard */
+body { background:#eef3ee; }
+.app-shell { padding-bottom:104px; }
+.topbar {
+  padding:12px 16px;
+  background:rgba(238,243,238,.94);
+  border-bottom:none;
+}
+.logo-menu-button {
+  border:0; background:transparent; padding:0; display:flex; align-items:center; gap:10px; text-align:left;
+}
+.logo-menu-button img {
+  width:48px; height:48px; border-radius:15px; object-fit:cover;
+  box-shadow:0 5px 14px rgba(8,40,31,.18);
+}
+.brand-stack .brand { font-size:21px; letter-spacing:-1px; line-height:1; }
+.brand-stack .subtitle { letter-spacing:1.8px; font-size:8px; }
+.top-profile {
+  width:42px; height:42px; border-radius:50%; border:2px solid white;
+  background:linear-gradient(145deg,#d6e5dc,#ffffff); display:grid; place-items:center;
+  color:var(--green); font-size:20px; box-shadow:0 4px 12px rgba(13,59,46,.1);
+}
+.dashboard-hero {
+  position:relative; overflow:hidden; margin:8px 0 14px; min-height:170px;
+  border-radius:28px; padding:24px 20px; color:white;
+  background:linear-gradient(135deg,#0b3b33 0%,#176456 58%,#d5bd78 150%);
+  box-shadow:0 15px 34px rgba(13,59,46,.18);
+}
+.dashboard-hero::after {
+  content:""; position:absolute; right:-22px; bottom:-35px; width:210px; height:150px;
+  opacity:.17; background:url("icon-512.png?v=30") center/cover no-repeat; border-radius:50%;
+}
+.dashboard-hero > * { position:relative; z-index:1; }
+.dashboard-hero h1 { margin:6px 0 8px; font-size:31px; line-height:1.04; letter-spacing:-1.4px; }
+.dashboard-hero p:last-child { max-width:280px; margin:0; color:rgba(255,255,255,.82); }
+.dashboard-stats { margin-top:-30px; position:relative; z-index:2; padding:0 8px; }
+.stats-grid { gap:7px; }
+.stat-card { border:0; box-shadow:0 5px 16px rgba(19,33,28,.08); text-align:center; }
+.stat-card:active { transform:scale(.98); }
+.dashboard-section { margin-top:18px; }
+.featured-pb {
+  border:0; width:100%; padding:0; text-align:left; background:white; border-radius:24px;
+  overflow:hidden; box-shadow:0 7px 22px rgba(19,33,28,.08);
+}
+.featured-pb-top {
+  background:linear-gradient(145deg,#133e32,#1d6951); color:white; padding:16px 18px 13px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.featured-pb-body { display:flex; gap:14px; align-items:center; padding:16px 18px; }
+.featured-pb-icon {
+  width:68px; height:68px; flex:0 0 68px; display:grid; place-items:center; border-radius:20px;
+  background:#edf4ef; font-size:32px; overflow:hidden;
+}
+.featured-pb-icon img { width:100%; height:100%; object-fit:cover; }
+.featured-species { margin:0 0 3px; font-size:20px; font-weight:900; color:var(--green); }
+.featured-number { margin:0; font-size:29px; font-weight:950; letter-spacing:-1px; }
+.featured-detail { color:var(--muted); font-size:12px; margin-top:4px; }
+.featured-empty { color:var(--muted); font-weight:700; }
+.dashboard-tools { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.tool-card {
+  border:0; border-radius:20px; padding:16px; background:white; text-align:left;
+  box-shadow:0 5px 16px rgba(19,33,28,.07);
+}
+.tool-card .tool-icon { display:block; font-size:25px; margin-bottom:11px; }
+.tool-card strong { display:block; color:var(--green); font-size:16px; }
+.coming-badge {
+  display:inline-block; margin-top:7px; border-radius:999px; padding:4px 8px;
+  background:#edf2ef; color:var(--muted); font-size:9px; letter-spacing:.8px; font-weight:900;
+}
+.dashboard-rigs .item-card { padding:12px; }
+.dashboard-rigs .item-actions { display:none; }
+.fab {
+  position:fixed; z-index:24; right:18px; bottom:calc(76px + env(safe-area-inset-bottom));
+  width:62px; height:62px; border-radius:50%; border:5px solid #eef3ee;
+  background:var(--green); color:white; font-size:35px; line-height:1;
+  box-shadow:0 10px 26px rgba(13,59,46,.3);
+}
+.fab:active { transform:scale(.96); }
+.bottom-nav { grid-template-columns:repeat(5,1fr); padding-right:82px; }
+.nav-item span { font-size:19px; }
+.menu-list { display:grid; gap:9px; }
+.menu-action {
+  width:100%; border:1px solid var(--line); border-radius:15px; background:white;
+  padding:14px; text-align:left; font-weight:850; color:var(--green);
+}
+.add-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.add-option {
+  border:1px solid var(--line); border-radius:17px; background:white; padding:16px 10px;
+  text-align:center; font-weight:850; color:var(--green);
+}
+.add-option span { display:block; font-size:25px; margin-bottom:7px; }
+.species-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.species-choice {
+  border:1px solid var(--line); border-radius:14px; background:white; padding:12px;
+  text-align:left; font-weight:800; color:var(--green);
+}
+.species-choice.selected { background:var(--green); color:white; border-color:var(--green); }
+.settings-panel { padding:22px; }
+.panel { background:white; border:1px solid var(--line); border-radius:18px; padding:18px; margin-bottom:12px; }
+.primary { width:100%; border:0; border-radius:14px; background:var(--green); color:white; padding:14px; font-weight:900; }
+.secondary-action { width:100%; border:1px solid var(--line); border-radius:14px; background:white; color:var(--green); padding:13px; font-weight:850; }
+@media(max-width:390px){
+  .dashboard-hero h1{font-size:27px}
+  .dashboard-hero{min-height:158px}
+  .stat-number{font-size:21px}
+  .featured-pb-body{padding:14px}
+  .bottom-nav{padding-right:75px}
+}
+
 </style>
-  <title>PB — Personal Best v2.7</title>
+  <title>PB — Personal Best v3.0</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.7</small></div></div>
-    <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
+    <button class="logo-menu-button" id="logoMenuBtn" aria-label="Open PB menu">
+      <img src="apple-touch-icon.png?v=30" alt="PB largemouth bass logo">
+      <span class="brand-stack"><span class="brand">PB</span><span class="subtitle">PERSONAL BEST <small style="opacity:.7">v3.0</small></span></span>
+    </button>
+    <div class="top-profile" aria-label="Angler profile">🎣</div>
   </header>
 
   <main>
     <section class="screen active" data-screen="home">
-      <div class="hero">
+      <div class="dashboard-hero">
         <p class="eyebrow">YOUR FISHING COMPANION</p>
         <h1>Gear organized.<br>Memories saved.</h1>
-        <p>Inventory at its core—rigs, catches, and trip-ready gear built around what you own.</p>
+        <p>Everything you own, everything you catch, and every personal best—all in one place.</p>
       </div>
 
-      <div class="stats-grid">
-        <button class="stat-card" data-go="tackle"><span class="stat-number" id="tackleCount">0</span><span class="stat-label">Tackle</span></button>
-        <button class="stat-card" data-go="rods"><span class="stat-number" id="rodCount">0</span><span class="stat-label">Rods</span></button>
-        <button class="stat-card" data-go="rigs"><span class="stat-number" id="rigCount">0</span><span class="stat-label">Rigs</span></button>
-        <button class="stat-card" data-go="catches"><span class="stat-number" id="catchCount">0</span><span class="stat-label">Catches</span></button>
+      <div class="dashboard-stats">
+        <div class="stats-grid">
+          <button class="stat-card" data-go="tackle"><span class="stat-number" id="tackleCount">0</span><span class="stat-label">Tackle</span></button>
+          <button class="stat-card" data-go="rods"><span class="stat-number" id="rodCount">0</span><span class="stat-label">Rods</span></button>
+          <button class="stat-card" data-go="rigs"><span class="stat-number" id="rigCount">0</span><span class="stat-label">Rigs</span></button>
+          <button class="stat-card" data-go="catches"><span class="stat-number" id="catchCount">0</span><span class="stat-label">Catches</span></button>
+        </div>
       </div>
 
-      <div class="section-heading"><h2>Quick Add</h2></div>
-      <div class="quick-grid">
-        <button class="quick-card" data-open-form="tackle"><span>🎣</span>Add Tackle</button>
-        <button class="quick-card" data-open-form="box"><span>🧰</span>Create Box</button>
-        <button class="quick-card" data-go="backup"><span>💾</span>Backup & Restore</button>
-        <button class="quick-card" data-open-form="rod"><span>📏</span>Add Rod</button>
-        <button class="quick-card" data-open-form="reel"><span>⚙️</span>Add Reel</button>
-        <button class="quick-card" data-open-form="rig"><span>🪝</span>Build Rig</button>
-        <button class="quick-card" data-open-form="catch"><span>🏆</span>Log Catch</button>
-        <button class="quick-card" data-open-form="shopping"><span>🛒</span>Add to List</button>
+      <div class="dashboard-section">
+        <button class="featured-pb" id="featuredPbCard" type="button">
+          <div class="featured-pb-top"><strong>🏆 FEATURED PERSONAL BEST</strong><span>View records ›</span></div>
+          <div class="featured-pb-body" id="featuredPbBody"></div>
+        </button>
       </div>
 
-      <div class="section-heading"><h2>Current Rigs</h2><button class="text-button" data-go="rigs">View all</button></div>
-      <div id="recentRigs" class="card-list"></div>
+      <div class="dashboard-section">
+        <div class="section-heading"><h2>Fishing Tools</h2></div>
+        <div class="dashboard-tools">
+          <button class="tool-card" type="button" data-coming-soon="Trip Planner"><span class="tool-icon">🗺️</span><strong>Trip Planner</strong><span class="coming-badge">COMING SOON</span></button>
+          <button class="tool-card" type="button" data-coming-soon="PB Achievements"><span class="tool-icon">🏅</span><strong>PB Achievements</strong><span class="coming-badge">COMING SOON</span></button>
+          <button class="tool-card" type="button" data-coming-soon="WaterScan"><span class="tool-icon">🌊</span><strong>WaterScan</strong><span class="coming-badge">COMING SOON</span></button>
+          <button class="tool-card" type="button" data-coming-soon="BoatBuddy"><span class="tool-icon">🚤</span><strong>BoatBuddy</strong><span class="coming-badge">COMING SOON</span></button>
+        </div>
+      </div>
+
+      <div class="dashboard-section dashboard-rigs">
+        <div class="section-heading"><h2>Current Rigs</h2><button class="text-button" data-go="rigs">View all</button></div>
+        <div id="recentRigs" class="card-list"></div>
+      </div>
     </section>
 
     <section class="screen" data-screen="tackle">
@@ -219,10 +341,10 @@ form, .install-help { padding: 22px; }
     </section>
   </main>
 
+  <button class="fab" id="globalAddBtn" aria-label="Add something">＋</button>
   <nav class="bottom-nav">
     <button class="nav-item active" data-go="home"><span>⌂</span>Home</button>
     <button class="nav-item" data-go="tackle"><span>🎣</span>Tackle</button>
-    <button class="nav-item" data-go="rods"><span>📏</span>Gear</button>
     <button class="nav-item" data-go="rigs"><span>🪝</span>Rigs</button>
     <button class="nav-item" data-go="catches"><span>🏆</span>Catches</button>
     <button class="nav-item" data-go="shopping"><span>🛒</span>List</button>
@@ -240,9 +362,46 @@ form, .install-help { padding: 22px; }
   </form>
 </dialog>
 
-<dialog id="helpDialog">
+<dialog id="menuDialog">
   <div class="install-help">
-    <div class="dialog-head"><div><p class="eyebrow">IPHONE SETUP</p><h2>Add PB to Home Screen</h2></div><button class="close-button" type="button" id="closeHelp">×</button></div>
+    <div class="dialog-head"><div><p class="eyebrow">PB MENU</p><h2>Personal Best</h2></div><button class="close-button" type="button" id="closeMenu">×</button></div>
+    <div class="menu-list">
+      <button class="menu-action" type="button" data-menu-go="backup">💾 Backup & Restore</button>
+      <button class="menu-action" type="button" id="openSettingsBtn">⚙️ Favorite Species & Settings</button>
+      <button class="menu-action" type="button" id="installHelpBtn">📲 Add PB to Home Screen</button>
+      <button class="menu-action" type="button" data-menu-go="personal-bests">🏆 All Personal Bests</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="addDialog">
+  <div class="install-help">
+    <div class="dialog-head"><div><p class="eyebrow">QUICK ADD</p><h2>What are you adding?</h2></div><button class="close-button" type="button" id="closeAdd">×</button></div>
+    <div class="add-grid">
+      <button class="add-option" data-add-type="tackle"><span>🎣</span>Tackle</button>
+      <button class="add-option" data-add-type="box"><span>🧰</span>Box</button>
+      <button class="add-option" data-add-type="rod"><span>📏</span>Rod</button>
+      <button class="add-option" data-add-type="reel"><span>⚙️</span>Reel</button>
+      <button class="add-option" data-add-type="rig"><span>🪝</span>Rig</button>
+      <button class="add-option" data-add-type="catch"><span>🐟</span>Catch</button>
+      <button class="add-option" data-add-type="shopping"><span>🛒</span>Shopping Item</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="speciesDialog">
+  <div class="settings-panel">
+    <div class="dialog-head"><div><p class="eyebrow">MAKE PB YOURS</p><h2>Choose your favorite species</h2></div><button class="close-button" type="button" id="closeSpecies">×</button></div>
+    <p class="muted">This species stays featured on your dashboard. You can change it anytime by tapping the PB logo.</p>
+    <div class="species-grid" id="speciesChoices"></div>
+    <div class="field" style="margin-top:12px"><label for="customSpecies">Other species</label><input id="customSpecies" type="text" placeholder="Enter another species"></div>
+    <button class="primary-button" id="saveSpeciesBtn" type="button">Save Favorite Species</button>
+  </div>
+</dialog>
+
+<dialog id="installDialog">
+  <div class="install-help">
+    <div class="dialog-head"><div><p class="eyebrow">IPHONE SETUP</p><h2>Add PB to Home Screen</h2></div><button class="close-button" type="button" id="closeInstall">×</button></div>
     <ol><li>Open PB in Safari.</li><li>Tap Share.</li><li>Tap <strong>Add to Home Screen</strong>.</li><li>Tap <strong>Add</strong>.</li></ol>
   </div>
 </dialog>
@@ -267,6 +426,8 @@ let saved = findExistingSavedData();
 if (saved && !saved.rods) saved = {...saved, rods:[], reels:[], rigs:[]};
 const state = saved || { tackle:[], boxes:[], catches:[], shopping:[], rods:[], reels:[], rigs:[] };
 ["tackle","boxes","catches","shopping","rods","reels","rigs"].forEach(k => state[k] ||= []);
+state.preferences ||= {favoriteSpecies:""};
+state.preferences.favoriteSpecies ||= "";
 
 const PHOTO_DB = "pb-personal-best-photos";
 const PHOTO_STORE = "photos";
@@ -368,7 +529,7 @@ function createSnapshot() {
   }
 }
 function downloadBackup() {
-  const payload = {app:"PB Personal Best",version:"2.7",exportedAt:new Date().toISOString(),data:state};
+  const payload = {app:"PB Personal Best",version:"3.0",exportedAt:new Date().toISOString(),data:state};
   const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -389,7 +550,10 @@ function normalizeImportedData(raw) {
     shopping:Array.isArray(incoming.shopping)?incoming.shopping:[],
     rods:Array.isArray(incoming.rods)?incoming.rods:[],
     reels:Array.isArray(incoming.reels)?incoming.reels:[],
-    rigs:Array.isArray(incoming.rigs)?incoming.rigs:[]
+    rigs:Array.isArray(incoming.rigs)?incoming.rigs:[],
+    preferences:{
+      favoriteSpecies:String(incoming.preferences?.favoriteSpecies || "")
+    }
   };
 }
 async function importBackupFile(file) {
@@ -432,6 +596,7 @@ const save = () => {
 function go(screen) {
   document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.dataset.screen === screen));
   document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.go === screen));
+  document.getElementById("menuDialog")?.close();
   window.scrollTo({top:0, behavior:"smooth"});
 }
 document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
@@ -715,13 +880,36 @@ function renderShopping(){
   if(!state.shopping.length)return empty(el,"Your shopping list is empty.");
   el.innerHTML=state.shopping.map(i=>`<div class="item-card ${i.done?"completed":""}"><input type="checkbox" ${i.done?"checked":""} onchange="toggleShopping('${i.id}')"><div class="item-content"><p class="item-title">${escapeHtml(i.name)} ×${i.quantity}</p><div class="item-meta">${i.price?"$"+i.price.toFixed(2):""}${i.notes?(i.price?" • ":"")+escapeHtml(i.notes):""}</div></div>${actions("shopping","shopping",i.id)}</div>`).join("");
 }
+
+function favoriteSpeciesCatch(){
+  const favorite = normalizedSpecies(state.preferences?.favoriteSpecies || "");
+  if (!favorite) return null;
+  return bestCatchMap().get(favorite)?.catch || null;
+}
+function renderFeaturedPb(){
+  const body = document.getElementById("featuredPbBody");
+  if (!body) return;
+  const species = state.preferences?.favoriteSpecies || "";
+  if (!species) {
+    body.innerHTML = `<div class="featured-pb-icon">🐟</div><div><p class="featured-species">Choose your favorite species</p><p class="featured-empty">Tap here to personalize your dashboard.</p></div>`;
+    return;
+  }
+  const best = favoriteSpeciesCatch();
+  if (!best) {
+    body.innerHTML = `<div class="featured-pb-icon"><img src="icon-192.png?v=30" alt=""></div><div><p class="featured-species">${escapeHtml(species)}</p><p class="featured-empty">No catch logged yet—your first PB is waiting.</p><div class="featured-detail">Tap to log or view catches</div></div>`;
+    return;
+  }
+  const value = best.weight ? `${best.weight} lb` : best.length ? `${best.length} in` : "Catch logged";
+  body.innerHTML = `${best.photoKey?`<div class="featured-pb-icon"><img data-photo-key="${escapeAttr(best.photoKey)}" alt="${escapeAttr(species)} personal best" style="display:none"></div>`:`<div class="featured-pb-icon">🏆</div>`}<div><p class="featured-species">${escapeHtml(species)}</p><p class="featured-number">${escapeHtml(value)}</p><div class="featured-detail">${escapeHtml([best.location,best.date].filter(Boolean).join(" • "))}</div></div>`;
+}
+
 function renderStats(){
   document.getElementById("tackleCount").textContent=state.tackle.length;
   document.getElementById("rodCount").textContent=state.rods.length;
   document.getElementById("rigCount").textContent=state.rigs.length;
   document.getElementById("catchCount").textContent=state.catches.length;
 }
-function renderAll(){renderStats();renderTackle();renderRods();renderReels();renderRigs();renderBoxes();renderCatches();renderPersonalBests();renderShopping();hydratePhotos();}
+function renderAll(){renderStats();renderFeaturedPb();renderTackle();renderRods();renderReels();renderRigs();renderBoxes();renderCatches();renderPersonalBests();renderShopping();hydratePhotos();}
 function makeId(){
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
   return "pb-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,10);
@@ -735,8 +923,59 @@ document.querySelectorAll("[data-equipment-tab]").forEach(b=>b.addEventListener(
   document.getElementById("rodList").classList.toggle("hidden",b.dataset.equipmentTab!=="rods");
   document.getElementById("reelList").classList.toggle("hidden",b.dataset.equipmentTab!=="reels");
 }));
-document.getElementById("installHelpBtn").addEventListener("click",()=>document.getElementById("helpDialog").showModal());
-document.getElementById("closeHelp").addEventListener("click",()=>document.getElementById("helpDialog").close());
+
+const menuDialog = document.getElementById("menuDialog");
+const addDialog = document.getElementById("addDialog");
+const speciesDialog = document.getElementById("speciesDialog");
+const installDialog = document.getElementById("installDialog");
+const speciesOptions = ["Largemouth Bass","Smallmouth Bass","Crappie","Bluegill","Catfish","Trout","Walleye","Pike","Muskie","Redfish"];
+
+function renderSpeciesChoices(){
+  const current = state.preferences?.favoriteSpecies || "";
+  document.getElementById("speciesChoices").innerHTML = speciesOptions.map(s =>
+    `<button type="button" class="species-choice ${normalizedSpecies(s)===normalizedSpecies(current)?"selected":""}" data-species="${escapeAttr(s)}">🐟 ${escapeHtml(s)}</button>`
+  ).join("");
+  document.querySelectorAll("[data-species]").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-species]").forEach(x=>x.classList.remove("selected"));
+    btn.classList.add("selected");
+    document.getElementById("customSpecies").value="";
+  }));
+}
+function openSpeciesSettings(force=false){
+  renderSpeciesChoices();
+  document.getElementById("customSpecies").value = speciesOptions.some(s=>normalizedSpecies(s)===normalizedSpecies(state.preferences.favoriteSpecies)) ? "" : state.preferences.favoriteSpecies;
+  document.getElementById("closeSpecies").style.visibility = force ? "hidden" : "visible";
+  speciesDialog.showModal();
+}
+document.getElementById("logoMenuBtn").addEventListener("click",()=>menuDialog.showModal());
+document.getElementById("closeMenu").addEventListener("click",()=>menuDialog.close());
+document.querySelectorAll("[data-menu-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.menuGo)));
+document.getElementById("openSettingsBtn").addEventListener("click",()=>{menuDialog.close();openSpeciesSettings(false);});
+document.getElementById("installHelpBtn").addEventListener("click",()=>{menuDialog.close();installDialog.showModal();});
+document.getElementById("closeInstall").addEventListener("click",()=>installDialog.close());
+document.getElementById("closeSpecies").addEventListener("click",()=>speciesDialog.close());
+
+document.getElementById("globalAddBtn").addEventListener("click",()=>addDialog.showModal());
+document.getElementById("closeAdd").addEventListener("click",()=>addDialog.close());
+document.querySelectorAll("[data-add-type]").forEach(b=>b.addEventListener("click",()=>{
+  addDialog.close();
+  openForm(b.dataset.addType);
+}));
+document.getElementById("featuredPbCard").addEventListener("click",()=>{
+  if (!state.preferences.favoriteSpecies) return openSpeciesSettings(true);
+  go(favoriteSpeciesCatch() ? "personal-bests" : "catches");
+});
+document.querySelectorAll("[data-coming-soon]").forEach(b=>b.addEventListener("click",()=>alert(`${b.dataset.comingSoon} is coming soon to PB.`)));
+document.getElementById("saveSpeciesBtn").addEventListener("click",()=>{
+  const selected = document.querySelector("[data-species].selected")?.dataset.species || "";
+  const custom = document.getElementById("customSpecies").value.trim();
+  const favorite = custom || selected;
+  if (!favorite) return alert("Choose or enter a favorite species.");
+  state.preferences.favoriteSpecies = favorite;
+  speciesDialog.close();
+  save();
+});
+
 
 window.addEventListener("load", async () => {
   try {
@@ -762,6 +1001,7 @@ document.getElementById("restoreSnapshotBtn")?.addEventListener("click",restoreL
 window.addEventListener("pagehide",createSnapshot);
 updateSnapshotStatus();
 renderAll();
+if (!state.preferences.favoriteSpecies) setTimeout(()=>openSpeciesSettings(true),250);
 document.documentElement.dataset.pbReady = "true";
 
 </script>
