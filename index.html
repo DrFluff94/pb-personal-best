@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="PB" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png?v=26" />
   <style>
 
 :root {
@@ -115,13 +115,20 @@ form, .install-help { padding: 22px; }
 .pb-summary strong { display:block; font-size:20px; color:var(--green); margin-top:4px; }
 @media (max-width:390px) { .item-photo { width:62px; height:62px; flex-basis:62px; } }
 
+
+.photo-choice-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+.photo-choice { position:relative; overflow:hidden; }
+.photo-choice input { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+.photo-choice span { display:flex; align-items:center; justify-content:center; min-height:46px; border-radius:12px; background:#eef3f0; border:1px solid #d8e0dc; color:var(--green); font-weight:850; text-align:center; padding:8px; }
+.photo-choice input:focus + span { outline:3px solid rgba(179,224,59,.45); }
+
 </style>
-  <title>PB — Personal Best v2.4</title>
+  <title>PB — Personal Best v2.6</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.4</small></div></div>
+    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.6</small></div></div>
     <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
   </header>
 
@@ -350,7 +357,21 @@ const dynamicForm = document.getElementById("dynamicForm");
 const formFields = document.getElementById("formFields");
 
 const field = (label,name,type="text",value="",extra="") => `<div class="field"><label for="${name}">${label}</label><input id="${name}" name="${name}" type="${type}" value="${escapeAttr(value)}" ${extra}></div>`;
-const photoField = (item={}) => `<div class="field photo-field"><label for="photo">Photo</label><input id="photo" name="photo" type="file" accept="image/*" capture="environment"><img id="photoPreview" class="photo-preview" alt="Selected photo preview"><p class="muted">${item.photoKey ? "Choose a new photo to replace the current one." : "Take a photo or choose one from your library."}</p></div>`;
+const photoField = (item={}) => `<div class="field photo-field">
+  <label>Photo</label>
+  <div class="photo-choice-row">
+    <label class="photo-choice">
+      <input id="cameraPhoto" name="cameraPhoto" type="file" accept="image/*" capture="environment">
+      <span>📷 Take Photo</span>
+    </label>
+    <label class="photo-choice">
+      <input id="libraryPhoto" name="libraryPhoto" type="file" accept="image/*">
+      <span>🖼️ Photo Library</span>
+    </label>
+  </div>
+  <img id="photoPreview" class="photo-preview" alt="Selected photo preview">
+  <p class="muted">${item.photoKey ? "Choose a new photo to replace the current one." : "Take a new picture or select one already saved on your phone."}</p>
+</div>`;
 
 const textarea = (label,name,value="") => `<div class="field"><label for="${name}">${label}</label><textarea id="${name}" name="${name}">${escapeHtml(value)}</textarea></div>`;
 const selectField = (label,name,options,value="") => `<div class="field"><label for="${name}">${label}</label><select id="${name}" name="${name}">${options.map(o => {
@@ -435,16 +456,21 @@ function openForm(type,id=null) {
     formFields.innerHTML = `${field("Item","name","text",item.name||"","required")}<div class="two-col">${field("Quantity","quantity","number",item.quantity??1,"min='1'")}${field("Estimated price","price","number",item.price??"","step='0.01' min='0'")}</div>${textarea("Store / Notes","notes",item.notes||"")}`;
   }
   formDialog.showModal();
-  const photoInput = document.getElementById("photo");
-  if (photoInput) {
-    photoInput.addEventListener("change", () => {
-      const file = photoInput.files?.[0];
-      const preview = document.getElementById("photoPreview");
-      if (!file || !preview) return;
-      preview.src = URL.createObjectURL(file);
-      preview.style.display = "block";
-    });
-  }
+  const cameraInput = document.getElementById("cameraPhoto");
+  const libraryInput = document.getElementById("libraryPhoto");
+  const previewSelectedPhoto = (input, otherInput) => {
+    const file = input?.files?.[0];
+    const preview = document.getElementById("photoPreview");
+    if (!file || !preview) return;
+    if (otherInput) otherInput.value = "";
+    if (preview.dataset.objectUrl) URL.revokeObjectURL(preview.dataset.objectUrl);
+    const objectUrl = URL.createObjectURL(file);
+    preview.dataset.objectUrl = objectUrl;
+    preview.src = objectUrl;
+    preview.style.display = "block";
+  };
+  cameraInput?.addEventListener("change", () => previewSelectedPhoto(cameraInput, libraryInput));
+  libraryInput?.addEventListener("change", () => previewSelectedPhoto(libraryInput, cameraInput));
 }
 
 document.querySelectorAll("[data-open-form]").forEach(b => b.addEventListener("click",()=>openForm(b.dataset.openForm)));
@@ -453,8 +479,11 @@ document.getElementById("closeDialog").addEventListener("click",()=>formDialog.c
 dynamicForm.addEventListener("submit", async e => {
   e.preventDefault();
   const formData = new FormData(dynamicForm);
-  const photoFile = formData.get("photo");
-  formData.delete("photo");
+  const cameraPhoto = formData.get("cameraPhoto");
+  const libraryPhoto = formData.get("libraryPhoto");
+  const photoFile = libraryPhoto?.size ? libraryPhoto : cameraPhoto;
+  formData.delete("cameraPhoto");
+  formData.delete("libraryPhoto");
   const data = Object.fromEntries(formData.entries());
   const map = {tackle:"tackle",box:"boxes",catch:"catches",shopping:"shopping",rod:"rods",reel:"reels",rig:"rigs"};
   const key = map[activeForm];
