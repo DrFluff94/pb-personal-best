@@ -123,12 +123,12 @@ form, .install-help { padding: 22px; }
 .photo-choice input:focus + span { outline:3px solid rgba(179,224,59,.45); }
 
 </style>
-  <title>PB — Personal Best v2.6</title>
+  <title>PB — Personal Best v2.7</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
-    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.6</small></div></div>
+    <div><div class="brand">PB</div><div class="subtitle">PERSONAL BEST <small style="opacity:.7">v2.7</small></div></div>
     <button class="icon-button" id="installHelpBtn" aria-label="Install help">＋</button>
   </header>
 
@@ -151,6 +151,7 @@ form, .install-help { padding: 22px; }
       <div class="quick-grid">
         <button class="quick-card" data-open-form="tackle"><span>🎣</span>Add Tackle</button>
         <button class="quick-card" data-open-form="box"><span>🧰</span>Create Box</button>
+        <button class="quick-card" data-go="backup"><span>💾</span>Backup & Restore</button>
         <button class="quick-card" data-open-form="rod"><span>📏</span>Add Rod</button>
         <button class="quick-card" data-open-form="reel"><span>⚙️</span>Add Reel</button>
         <button class="quick-card" data-open-form="rig"><span>🪝</span>Build Rig</button>
@@ -204,6 +205,14 @@ form, .install-help { padding: 22px; }
       <div id="personalBestList" class="card-list"></div>
     </section>
 
+    <section class="screen" data-screen="backup">
+      <div class="page-head"><div><p class="eyebrow">DATA SAFETY</p><h1>Backup & Restore</h1></div><button class="primary-small secondary" data-go="home">Home</button></div>
+      <div class="panel"><h2>Download a Backup</h2><p class="muted">Save your tackle, boxes, rods, reels, rigs, catches, shopping list, and PB records to the Files app.</p><button id="exportBackupBtn" class="primary" type="button">Download PB Backup</button></div>
+      <div class="panel"><h2>Restore a Backup</h2><p class="muted">Restoring replaces the information currently in PB.</p><label class="photo-choice" style="display:block;margin-top:10px"><input id="importBackupInput" type="file" accept=".json,application/json"><span>Choose Backup File</span></label></div>
+      <div class="panel"><h2>Automatic Recovery</h2><p class="muted">PB keeps ten rolling snapshots on this device whenever your information changes.</p><button id="restoreSnapshotBtn" class="secondary-action" type="button">Restore Latest Snapshot</button><p id="snapshotStatus" class="muted" style="margin-top:10px"></p></div>
+      <div class="panel"><h2>Before Updating</h2><p class="muted">Download a backup first and keep using the exact same GitHub Pages address.</p></div>
+    </section>
+
     <section class="screen" data-screen="shopping">
       <div class="page-head"><div><p class="eyebrow">RESTOCK</p><h1>Shopping List</h1></div><button class="primary-small" data-open-form="shopping">+ Add</button></div>
       <div id="shoppingList" class="card-list"></div>
@@ -241,11 +250,21 @@ form, .install-help { padding: 22px; }
 
 const STORAGE_KEY = "pb-personal-best-data-v2";
 const OLD_KEY = "pb-personal-best-data-v1";
-let saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-if (!saved) {
-  const old = JSON.parse(localStorage.getItem(OLD_KEY));
-  saved = old ? {...old, rods:[], reels:[], rigs:[]} : null;
+const SNAPSHOT_KEY = "pb-personal-best-recovery-snapshots";
+const KNOWN_DATA_KEYS = ["pb-personal-best-data-v2","pb-personal-best-data-v1","pb-personal-best-data","pb-data-v2","pb-data"];
+
+function safeParse(value) {
+  try { return value ? JSON.parse(value) : null; } catch { return null; }
 }
+function findExistingSavedData() {
+  for (const key of KNOWN_DATA_KEYS) {
+    const candidate = safeParse(localStorage.getItem(key));
+    if (candidate && typeof candidate === "object") return candidate;
+  }
+  return null;
+}
+let saved = findExistingSavedData();
+if (saved && !saved.rods) saved = {...saved, rods:[], reels:[], rigs:[]};
 const state = saved || { tackle:[], boxes:[], catches:[], shopping:[], rods:[], reels:[], rigs:[] };
 ["tackle","boxes","catches","shopping","rods","reels","rigs"].forEach(k => state[k] ||= []);
 
@@ -340,9 +359,74 @@ async function hydratePhotos(root=document) {
 let activeForm = null;
 let editingId = null;
 
+function createSnapshot() {
+  const snapshots = safeParse(localStorage.getItem(SNAPSHOT_KEY)) || [];
+  const serialized = JSON.stringify(state);
+  if (!snapshots[0] || snapshots[0].data !== serialized) {
+    snapshots.unshift({createdAt:Date.now(), data:serialized});
+    localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshots.slice(0,10)));
+  }
+}
+function downloadBackup() {
+  const payload = {app:"PB Personal Best",version:"2.7",exportedAt:new Date().toISOString(),data:state};
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `PB-Backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function normalizeImportedData(raw) {
+  const incoming = raw?.data || raw;
+  if (!incoming || typeof incoming !== "object") throw new Error("Invalid backup");
+  return {
+    tackle:Array.isArray(incoming.tackle)?incoming.tackle:[],
+    boxes:Array.isArray(incoming.boxes)?incoming.boxes:[],
+    catches:Array.isArray(incoming.catches)?incoming.catches:[],
+    shopping:Array.isArray(incoming.shopping)?incoming.shopping:[],
+    rods:Array.isArray(incoming.rods)?incoming.rods:[],
+    reels:Array.isArray(incoming.reels)?incoming.reels:[],
+    rigs:Array.isArray(incoming.rigs)?incoming.rigs:[]
+  };
+}
+async function importBackupFile(file) {
+  const restored = normalizeImportedData(JSON.parse(await file.text()));
+  if (!confirm("Restore this backup? This replaces the information currently in PB.")) return;
+  createSnapshot();
+  Object.keys(state).forEach(k=>delete state[k]);
+  Object.assign(state,restored);
+  save();
+  alert("Your PB backup was restored.");
+}
+function latestSnapshot() {
+  return (safeParse(localStorage.getItem(SNAPSHOT_KEY)) || [])[0] || null;
+}
+function updateSnapshotStatus() {
+  const el=document.getElementById("snapshotStatus");
+  if (!el) return;
+  const snapshot=latestSnapshot();
+  el.textContent=snapshot?`Latest snapshot: ${new Date(snapshot.createdAt).toLocaleString()}`:"No recovery snapshot is available yet.";
+}
+function restoreLatestSnapshot() {
+  const snapshot=latestSnapshot();
+  if (!snapshot) return alert("No recovery snapshot is available on this device.");
+  if (!confirm("Restore the latest automatic snapshot?")) return;
+  const restored=normalizeImportedData(safeParse(snapshot.data));
+  Object.keys(state).forEach(k=>delete state[k]);
+  Object.assign(state,restored);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  renderAll();
+  updateSnapshotStatus();
+  alert("The latest recovery snapshot was restored.");
+}
 const save = () => {
+  createSnapshot();
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   renderAll();
+  updateSnapshotStatus();
 };
 
 function go(screen) {
@@ -666,6 +750,17 @@ window.addEventListener("load", async () => {
     }
   } catch (err) { console.warn("Cache cleanup skipped", err); }
 });
+document.getElementById("exportBackupBtn")?.addEventListener("click",downloadBackup);
+document.getElementById("importBackupInput")?.addEventListener("change",async e=>{
+  const file=e.target.files?.[0];
+  if (!file) return;
+  try { await importBackupFile(file); }
+  catch(err){ alert("That file is not a valid PB backup."); console.warn(err); }
+  e.target.value="";
+});
+document.getElementById("restoreSnapshotBtn")?.addEventListener("click",restoreLatestSnapshot);
+window.addEventListener("pagehide",createSnapshot);
+updateSnapshotStatus();
 renderAll();
 document.documentElement.dataset.pbReady = "true";
 
