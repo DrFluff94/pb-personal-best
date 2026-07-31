@@ -232,15 +232,19 @@ body { background:#eef3ee; }
   .bottom-nav{padding-right:75px}
 }
 
+
+/* PB v3.1 BoatBuddy */
+.boatbuddy-shell{display:grid;gap:14px}.boat-tabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.boat-tabs::-webkit-scrollbar{display:none}.boat-tab{flex:0 0 auto;border:1px solid var(--line);background:white;color:var(--green);border-radius:999px;padding:9px 13px;font-weight:850;font-size:12px}.boat-tab.active{background:var(--green);color:white;border-color:var(--green)}.boat-panel{display:none}.boat-panel.active{display:block}.boat-hero{border-radius:25px;padding:20px;color:white;background:linear-gradient(140deg,#0d3b35,#176659 70%,#a88d48 150%);box-shadow:0 12px 28px rgba(13,59,46,.17)}.boat-hero h2{margin:4px 0 2px;font-size:27px}.boat-status{display:flex;align-items:center;gap:8px;margin-top:14px;font-weight:900}.status-dot{width:11px;height:11px;border-radius:50%;background:#72d18c;box-shadow:0 0 0 5px rgba(114,209,140,.14)}.readiness-wrap{display:flex;align-items:center;gap:18px;margin-top:17px}.readiness-ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#d7bd72 var(--ready-angle,0deg),rgba(255,255,255,.18) 0);position:relative;flex:0 0 92px}.readiness-ring::after{content:"";position:absolute;inset:9px;border-radius:50%;background:#174f45}.readiness-ring strong{position:relative;z-index:1;font-size:24px}.readiness-meta{display:grid;gap:6px;font-size:13px;color:rgba(255,255,255,.88)}.boat-metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.boat-metric{background:white;border:1px solid var(--line);border-radius:18px;padding:14px}.boat-metric strong{display:block;color:var(--green);margin-bottom:3px}.boat-metric small{color:var(--muted)}.boat-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boat-action{border:0;border-radius:18px;background:white;padding:15px;text-align:left;box-shadow:0 4px 14px rgba(19,33,28,.07);color:var(--green);font-weight:900}.boat-action span{display:block;font-size:23px;margin-bottom:8px}.boat-section-card{background:white;border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px}.boat-section-card h3{margin:0 0 11px;color:var(--green)}.boat-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boat-form-grid .field.full{grid-column:1/-1}.boat-list{display:grid;gap:9px}.boat-list-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:#f7f9f7;border:1px solid var(--line);border-radius:15px;padding:12px}.boat-list-main{min-width:0}.boat-list-main strong{display:block;color:var(--green)}.boat-list-main small{color:var(--muted)}.boat-list-actions{display:flex;gap:6px;flex:0 0 auto}.mini-btn{border:1px solid var(--line);background:white;border-radius:10px;padding:7px 9px;color:var(--green);font-weight:800;font-size:11px}.check-group{display:grid;gap:10px}.check-row{display:flex;align-items:center;gap:11px;padding:13px;border:1px solid var(--line);border-radius:15px;background:white}.check-row input{width:22px;height:22px;flex:0 0 22px}.check-row label{flex:1;font-weight:800;color:var(--green)}.check-row.done label{color:var(--muted);text-decoration:line-through}.check-phase{margin:16px 0 8px;font-size:12px;color:var(--muted);font-weight:900;letter-spacing:.8px}.boat-empty{border:1px dashed var(--line);border-radius:15px;padding:18px;color:var(--muted);text-align:center}.boat-progress{height:10px;background:#e9efeb;border-radius:999px;overflow:hidden;margin-top:8px}.boat-progress span{display:block;height:100%;background:var(--green);width:0}.boat-chip{display:inline-block;padding:4px 8px;border-radius:999px;background:#edf3ef;color:var(--green);font-size:10px;font-weight:900;margin-top:6px}@media(max-width:390px){.boat-form-grid,.boat-actions,.boat-metric-grid{grid-template-columns:1fr}.readiness-wrap{align-items:flex-start}}
+
 </style>
-  <title>PB — Personal Best v3.0</title>
+  <title>PB — Personal Best v3.1</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
     <button class="logo-menu-button" id="logoMenuBtn" aria-label="Open PB menu">
       <img src="apple-touch-icon.png?v=30" alt="PB largemouth bass logo">
-      <span class="brand-stack"><span class="brand">PB</span><span class="subtitle">PERSONAL BEST <small style="opacity:.7">v3.0</small></span></span>
+      <span class="brand-stack"><span class="brand">PB</span><span class="subtitle">PERSONAL BEST <small style="opacity:.7">v3.1</small></span></span>
     </button>
     <div class="top-profile" aria-label="Angler profile">🎣</div>
   </header>
@@ -275,13 +279,31 @@ body { background:#eef3ee; }
           <button class="tool-card" type="button" data-coming-soon="Trip Planner"><span class="tool-icon">🗺️</span><strong>Trip Planner</strong><span class="coming-badge">COMING SOON</span></button>
           <button class="tool-card" type="button" data-coming-soon="PB Achievements"><span class="tool-icon">🏅</span><strong>PB Achievements</strong><span class="coming-badge">COMING SOON</span></button>
           <button class="tool-card" type="button" data-coming-soon="WaterScan"><span class="tool-icon">🌊</span><strong>WaterScan</strong><span class="coming-badge">COMING SOON</span></button>
-          <button class="tool-card" type="button" data-coming-soon="BoatBuddy"><span class="tool-icon">🚤</span><strong>BoatBuddy</strong><span class="coming-badge">COMING SOON</span></button>
+          <button class="tool-card" type="button" data-go="boatbuddy"><span class="tool-icon">🚤</span><strong>BoatBuddy</strong><span class="coming-badge">OPEN</span></button>
         </div>
       </div>
 
       <div class="dashboard-section dashboard-rigs">
         <div class="section-heading"><h2>Current Rigs</h2><button class="text-button" data-go="rigs">View all</button></div>
         <div id="recentRigs" class="card-list"></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="boatbuddy">
+      <div class="section-heading"><div><p class="eyebrow">PB v3.1</p><h1>BoatBuddy</h1></div></div>
+      <div class="boatbuddy-shell">
+        <div class="boat-tabs"><button class="boat-tab active" data-boat-tab="dashboard">Dashboard</button><button class="boat-tab" data-boat-tab="boat">My Boat</button><button class="boat-tab" data-boat-tab="inventory">Inventory</button><button class="boat-tab" data-boat-tab="launch">Launch</button><button class="boat-tab" data-boat-tab="recovery">Recovery</button><button class="boat-tab" data-boat-tab="maintenance">Maintenance</button><button class="boat-tab" data-boat-tab="loadouts">Loadouts</button></div>
+        <div class="boat-panel active" data-boat-panel="dashboard">
+          <div class="boat-hero"><p class="eyebrow" style="color:rgba(255,255,255,.72)">CAPTAIN'S DASHBOARD</p><h2 id="boatDashName">My Boat</h2><div class="boat-status"><span class="status-dot" id="boatStatusDot"></span><span id="boatStatusText">SETUP NEEDED</span></div><div class="readiness-wrap"><div class="readiness-ring" id="readinessRing"><strong id="readinessPercent">0%</strong></div><div class="readiness-meta"><span id="readinessSummary">Add your boat details to begin.</span><span id="readinessNext">BoatBuddy keeps the whole setup in one place.</span></div></div></div>
+          <div class="boat-metric-grid"><div class="boat-metric"><strong id="boatFuelMetric">Not set</strong><small>Fuel</small></div><div class="boat-metric"><strong id="boatBatteryMetric">Not set</strong><small>Batteries</small></div><div class="boat-metric"><strong id="boatSafetyMetric">0 / 0</strong><small>Safety gear aboard</small></div><div class="boat-metric"><strong id="boatMaintenanceMetric">None due</strong><small>Maintenance</small></div></div>
+          <div class="boat-actions"><button class="boat-action" data-open-boat-tab="launch"><span>▶️</span>Launch Checklist</button><button class="boat-action" data-open-boat-tab="recovery"><span>🏁</span>Recovery Checklist</button><button class="boat-action" data-open-boat-tab="loadouts"><span>🎒</span>Loadouts</button><button class="boat-action" data-open-boat-tab="maintenance"><span>🔧</span>Maintenance</button></div>
+        </div>
+        <div class="boat-panel" data-boat-panel="boat"><div class="boat-section-card"><h3>Boat Profile</h3><div class="boat-form-grid"><div class="field"><label for="boatName">Boat name</label><input id="boatName" placeholder="River Runner"></div><div class="field"><label for="boatType">Type</label><select id="boatType"><option>Boat</option><option>Kayak</option><option>Canoe</option><option>Jon Boat</option><option>Bass Boat</option><option>Pontoon</option><option>Other</option></select></div><div class="field"><label for="boatMake">Make</label><input id="boatMake"></div><div class="field"><label for="boatModel">Model</label><input id="boatModel"></div><div class="field"><label for="boatYear">Year</label><input id="boatYear" type="number"></div><div class="field"><label for="boatLength">Length</label><input id="boatLength"></div><div class="field"><label for="boatMotor">Motor</label><input id="boatMotor"></div><div class="field"><label for="boatFuel">Fuel level</label><select id="boatFuel"><option value="">Not set</option><option>Full</option><option>3/4 Tank</option><option>1/2 Tank</option><option>1/4 Tank</option><option>Needs Fuel</option><option>Electric / N/A</option></select></div><div class="field"><label for="boatBattery">Battery status</label><select id="boatBattery"><option value="">Not set</option><option>Charged</option><option>Charging</option><option>Needs Charge</option><option>Needs Replacement</option><option>N/A</option></select></div><div class="field"><label for="boatRegistration">Registration expires</label><input id="boatRegistration" type="date"></div><div class="field full"><label for="boatNotes">Notes</label><textarea id="boatNotes" rows="3"></textarea></div></div><button class="primary-button" id="saveBoatProfile" type="button">Save Boat Profile</button></div></div>
+        <div class="boat-panel" data-boat-panel="inventory"><div class="boat-section-card"><h3>Add Boat Equipment</h3><div class="boat-form-grid"><div class="field"><label for="boatItemName">Item</label><input id="boatItemName"></div><div class="field"><label for="boatItemCategory">Category</label><select id="boatItemCategory"><option>Safety</option><option>Boat Equipment</option><option>Fishing Equipment</option><option>Tools</option><option>Electrical</option><option>Other</option></select></div><div class="field"><label for="boatItemQuantity">Quantity</label><input id="boatItemQuantity" type="number" min="1" value="1"></div><div class="field"><label for="boatItemStatus">Status</label><select id="boatItemStatus"><option>On Board</option><option>Removed</option><option>Needs Replacement</option><option>Missing</option></select></div></div><button class="primary-button" id="addBoatItem" type="button">Add Equipment</button></div><div class="boat-section-card"><h3>Permanent Boat Inventory</h3><div id="boatInventoryList" class="boat-list"></div></div></div>
+        <div class="boat-panel" data-boat-panel="launch"><div class="boat-section-card"><div class="section-heading"><h3>Launch Checklist</h3><button class="text-button" id="resetLaunchChecklist">Reset</button></div><div class="boat-progress"><span id="launchProgressBar"></span></div><p class="muted" id="launchProgressText"></p><div id="launchChecklist"></div></div></div>
+        <div class="boat-panel" data-boat-panel="recovery"><div class="boat-section-card"><div class="section-heading"><h3>Recovery Checklist</h3><button class="text-button" id="resetRecoveryChecklist">Reset</button></div><div class="boat-progress"><span id="recoveryProgressBar"></span></div><p class="muted" id="recoveryProgressText"></p><div id="recoveryChecklist"></div></div></div>
+        <div class="boat-panel" data-boat-panel="maintenance"><div class="boat-section-card"><h3>Add Maintenance</h3><div class="boat-form-grid"><div class="field"><label for="maintenanceName">Service</label><input id="maintenanceName"></div><div class="field"><label for="maintenanceCompleted">Completed</label><input id="maintenanceCompleted" type="date"></div><div class="field"><label for="maintenanceDue">Next due</label><input id="maintenanceDue" type="date"></div><div class="field"><label for="maintenanceCost">Cost</label><input id="maintenanceCost" type="number" step="0.01"></div><div class="field full"><label for="maintenanceNotes">Notes</label><textarea id="maintenanceNotes" rows="2"></textarea></div></div><button class="primary-button" id="addMaintenance" type="button">Save Maintenance</button></div><div class="boat-section-card"><h3>Maintenance History</h3><div id="maintenanceList" class="boat-list"></div></div></div>
+        <div class="boat-panel" data-boat-panel="loadouts"><div class="boat-section-card"><h3>Create Loadout</h3><div class="field"><label for="loadoutName">Loadout name</label><input id="loadoutName"></div><div class="field"><label for="loadoutItems">Items</label><textarea id="loadoutItems" rows="4" placeholder="One item per line"></textarea></div><button class="primary-button" id="addLoadout" type="button">Save Loadout</button></div><div class="boat-section-card"><h3>Saved Loadouts</h3><div id="loadoutList" class="boat-list"></div></div></div>
       </div>
     </section>
 
@@ -369,6 +391,7 @@ body { background:#eef3ee; }
       <button class="menu-action" type="button" data-menu-go="backup">💾 Backup & Restore</button>
       <button class="menu-action" type="button" id="openSettingsBtn">⚙️ Favorite Species & Settings</button>
       <button class="menu-action" type="button" id="installHelpBtn">📲 Add PB to Home Screen</button>
+      <button class="menu-action" type="button" data-menu-go="boatbuddy">🚤 BoatBuddy</button>
       <button class="menu-action" type="button" data-menu-go="personal-bests">🏆 All Personal Bests</button>
     </div>
   </div>
@@ -426,6 +449,13 @@ let saved = findExistingSavedData();
 if (saved && !saved.rods) saved = {...saved, rods:[], reels:[], rigs:[]};
 const state = saved || { tackle:[], boxes:[], catches:[], shopping:[], rods:[], reels:[], rigs:[] };
 ["tackle","boxes","catches","shopping","rods","reels","rigs"].forEach(k => state[k] ||= []);
+state.boatBuddy ||= {};
+state.boatBuddy.profile ||= {name:"",type:"Boat",make:"",model:"",year:"",length:"",motor:"",fuel:"",battery:"",registration:"",notes:""};
+state.boatBuddy.inventory ||= [];
+state.boatBuddy.maintenance ||= [];
+state.boatBuddy.loadouts ||= [];
+state.boatBuddy.launch ||= {};
+state.boatBuddy.recovery ||= {};
 state.preferences ||= {favoriteSpecies:""};
 state.preferences.favoriteSpecies ||= "";
 
@@ -529,7 +559,7 @@ function createSnapshot() {
   }
 }
 function downloadBackup() {
-  const payload = {app:"PB Personal Best",version:"3.0",exportedAt:new Date().toISOString(),data:state};
+  const payload = {app:"PB Personal Best",version:"3.1",exportedAt:new Date().toISOString(),data:state};
   const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -553,7 +583,8 @@ function normalizeImportedData(raw) {
     rigs:Array.isArray(incoming.rigs)?incoming.rigs:[],
     preferences:{
       favoriteSpecies:String(incoming.preferences?.favoriteSpecies || "")
-    }
+    },
+    boatBuddy: incoming.boatBuddy && typeof incoming.boatBuddy === "object" ? incoming.boatBuddy : {profile:{name:"",type:"Boat",make:"",model:"",year:"",length:"",motor:"",fuel:"",battery:"",registration:"",notes:""},inventory:[],maintenance:[],loadouts:[],launch:{},recovery:{}}
   };
 }
 async function importBackupFile(file) {
@@ -582,7 +613,15 @@ function restoreLatestSnapshot() {
   Object.keys(state).forEach(k=>delete state[k]);
   Object.assign(state,restored);
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-  renderAll();
+  
+document.querySelectorAll('[data-boat-tab]').forEach(b=>b.addEventListener('click',()=>setBoatTab(b.dataset.boatTab)));document.querySelectorAll('[data-open-boat-tab]').forEach(b=>b.addEventListener('click',()=>setBoatTab(b.dataset.openBoatTab)));
+document.getElementById('saveBoatProfile').addEventListener('click',()=>{const p=state.boatBuddy.profile,ids={boatName:'name',boatType:'type',boatMake:'make',boatModel:'model',boatYear:'year',boatLength:'length',boatMotor:'motor',boatFuel:'fuel',boatBattery:'battery',boatRegistration:'registration',boatNotes:'notes'};Object.entries(ids).forEach(([id,k])=>p[k]=document.getElementById(id).value.trim());save();alert('Boat profile saved.')});
+document.getElementById('addBoatItem').addEventListener('click',()=>{const name=document.getElementById('boatItemName').value.trim();if(!name)return alert('Enter an equipment name.');state.boatBuddy.inventory.push({id:boatId(),name,category:document.getElementById('boatItemCategory').value,quantity:Math.max(1,Number(document.getElementById('boatItemQuantity').value)||1),status:document.getElementById('boatItemStatus').value});document.getElementById('boatItemName').value='';save()});
+document.getElementById('resetLaunchChecklist').addEventListener('click',()=>{state.boatBuddy.launch={};save()});document.getElementById('resetRecoveryChecklist').addEventListener('click',()=>{state.boatBuddy.recovery={};save()});
+document.getElementById('addMaintenance').addEventListener('click',()=>{const name=document.getElementById('maintenanceName').value.trim();if(!name)return alert('Enter a maintenance service.');state.boatBuddy.maintenance.push({id:boatId(),name,completed:document.getElementById('maintenanceCompleted').value,due:document.getElementById('maintenanceDue').value,cost:document.getElementById('maintenanceCost').value,notes:document.getElementById('maintenanceNotes').value.trim()});['maintenanceName','maintenanceCompleted','maintenanceDue','maintenanceCost','maintenanceNotes'].forEach(id=>document.getElementById(id).value='');save()});
+document.getElementById('addLoadout').addEventListener('click',()=>{const name=document.getElementById('loadoutName').value.trim(),items=document.getElementById('loadoutItems').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!name)return alert('Enter a loadout name.');state.boatBuddy.loadouts.push({id:boatId(),name,items});document.getElementById('loadoutName').value='';document.getElementById('loadoutItems').value='';save()});
+
+renderAll();
   updateSnapshotStatus();
   alert("The latest recovery snapshot was restored.");
 }
@@ -909,7 +948,24 @@ function renderStats(){
   document.getElementById("rigCount").textContent=state.rigs.length;
   document.getElementById("catchCount").textContent=state.catches.length;
 }
-function renderAll(){renderStats();renderFeaturedPb();renderTackle();renderRods();renderReels();renderRigs();renderBoxes();renderCatches();renderPersonalBests();renderShopping();hydratePhotos();}
+
+const launchDefaults=[{phase:"Before Leaving Home",items:["Batteries charged","Fuel checked","Drain plug packed","Tow vehicle connected","Fishing license packed","Weather checked"]},{phase:"At the Ramp",items:["Drain plug installed","Transom straps removed","Motor support removed","PFDs aboard","Electronics powered","Cooler and gear loaded"]},{phase:"After Launch",items:["Boat tied securely","Truck and trailer parked","Keys and phone secured"]}];
+const recoveryDefaults=[{phase:"At the Ramp",items:["Boat secured to trailer","Motor raised","Livewell drained","Transom straps attached","Trailer lights connected"]},{phase:"At Home",items:["Drain plug removed","Battery chargers connected","Trash removed","Boat rinsed","Gear restocked"]}];
+function setBoatTab(name){document.querySelectorAll('.boat-tab').forEach(b=>b.classList.toggle('active',b.dataset.boatTab===name));document.querySelectorAll('.boat-panel').forEach(p=>p.classList.toggle('active',p.dataset.boatPanel===name));}
+function boatId(){return `b_${Date.now()}_${Math.random().toString(36).slice(2,7)}`}
+function dateDue(s){return s&&new Date(s+'T23:59:59').getTime()<Date.now()}
+function safetyCounts(){const x=state.boatBuddy.inventory.filter(i=>i.category==='Safety');return{total:x.length,ready:x.filter(i=>i.status==='On Board').length}}
+function checklistStats(type,defs){const map=state.boatBuddy[type]||{},items=defs.flatMap(g=>g.items),done=items.filter(i=>map[i]).length;return{done,total:items.length,percent:items.length?Math.round(done/items.length*100):0}}
+function readinessScore(){const p=state.boatBuddy.profile,s=safetyCounts(),l=checklistStats('launch',launchDefaults);const c=[!!p.name,!!(p.fuel&&p.fuel!=='Needs Fuel'),!!(p.battery&&!['Needs Charge','Needs Replacement'].includes(p.battery)),s.total>0&&s.ready===s.total,!state.boatBuddy.maintenance.some(m=>dateDue(m.due)),l.percent===100];return Math.round(c.filter(Boolean).length/c.length*100)}
+function fillBoatProfile(){const p=state.boatBuddy.profile,ids={boatName:'name',boatType:'type',boatMake:'make',boatModel:'model',boatYear:'year',boatLength:'length',boatMotor:'motor',boatFuel:'fuel',boatBattery:'battery',boatRegistration:'registration',boatNotes:'notes'};Object.entries(ids).forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.value=p[k]||''})}
+function renderBoatDashboard(){const p=state.boatBuddy.profile,score=readinessScore(),s=safetyCounts(),due=state.boatBuddy.maintenance.filter(m=>dateDue(m.due));document.getElementById('boatDashName').textContent=p.name||'My Boat';document.getElementById('readinessPercent').textContent=score+'%';document.getElementById('readinessRing').style.setProperty('--ready-angle',score*3.6+'deg');const status=score>=90?'READY TO FISH':score>=60?'NEEDS ATTENTION':'SETUP NEEDED';document.getElementById('boatStatusText').textContent=status;document.getElementById('boatStatusDot').style.background=score>=90?'#72d18c':score>=60?'#e4c56b':'#df8077';document.getElementById('readinessSummary').textContent=score>=90?'Your main boat systems are ready.':score>=60?'A few items need attention before launch.':'Finish setup and check your equipment.';document.getElementById('readinessNext').textContent=due.length?due.length+' maintenance item'+(due.length===1?' is':'s are')+' overdue.':'No overdue maintenance.';document.getElementById('boatFuelMetric').textContent=p.fuel||'Not set';document.getElementById('boatBatteryMetric').textContent=p.battery||'Not set';document.getElementById('boatSafetyMetric').textContent=s.ready+' / '+s.total;document.getElementById('boatMaintenanceMetric').textContent=due.length?due.length+' due':'None due'}
+function renderBoatInventory(){const list=document.getElementById('boatInventoryList'),items=state.boatBuddy.inventory;if(!items.length){list.innerHTML='<div class="boat-empty">No permanent boat equipment added yet.</div>';return}list.innerHTML=items.map(i=>`<div class="boat-list-item"><div class="boat-list-main"><strong>${escapeHtml(i.name)}</strong><small>${escapeHtml(i.category)} • Qty ${i.quantity}</small><span class="boat-chip">${escapeHtml(i.status)}</span></div><div class="boat-list-actions"><button class="mini-btn" data-boat-toggle="${i.id}">Change</button><button class="mini-btn" data-boat-delete="${i.id}">Delete</button></div></div>`).join('');document.querySelectorAll('[data-boat-toggle]').forEach(b=>b.addEventListener('click',()=>{const i=state.boatBuddy.inventory.find(x=>x.id===b.dataset.boatToggle),s=['On Board','Removed','Needs Replacement','Missing'];if(i){i.status=s[(s.indexOf(i.status)+1)%s.length];save()}}));document.querySelectorAll('[data-boat-delete]').forEach(b=>b.addEventListener('click',()=>{state.boatBuddy.inventory=state.boatBuddy.inventory.filter(x=>x.id!==b.dataset.boatDelete);save()}))}
+function renderChecklist(type,defs){const host=document.getElementById(type==='launch'?'launchChecklist':'recoveryChecklist'),map=state.boatBuddy[type];host.innerHTML=defs.map(g=>`<div class="check-phase">${escapeHtml(g.phase.toUpperCase())}</div><div class="check-group">${g.items.map(item=>`<div class="check-row ${map[item]?'done':''}"><input type="checkbox" data-check-type="${type}" data-check-item="${escapeAttr(item)}" ${map[item]?'checked':''}><label>${escapeHtml(item)}</label></div>`).join('')}</div>`).join('');host.querySelectorAll('input').forEach(c=>c.addEventListener('change',()=>{state.boatBuddy[c.dataset.checkType][c.dataset.checkItem]=c.checked;save()}));const s=checklistStats(type,defs);document.getElementById(type+'ProgressBar').style.width=s.percent+'%';document.getElementById(type+'ProgressText').textContent=s.done+' of '+s.total+' complete'}
+function renderMaintenance(){const list=document.getElementById('maintenanceList'),items=[...state.boatBuddy.maintenance].sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));if(!items.length){list.innerHTML='<div class="boat-empty">No maintenance records yet.</div>';return}list.innerHTML=items.map(m=>`<div class="boat-list-item"><div class="boat-list-main"><strong>${escapeHtml(m.name)}</strong><small>Completed: ${escapeHtml(m.completed||'Not entered')} • Next due: ${escapeHtml(m.due||'Not set')}</small>${m.cost?`<span class="boat-chip">$${Number(m.cost).toFixed(2)}</span>`:''}${dateDue(m.due)?'<span class="boat-chip">OVERDUE</span>':''}</div><button class="mini-btn" data-maint-delete="${m.id}">Delete</button></div>`).join('');document.querySelectorAll('[data-maint-delete]').forEach(b=>b.addEventListener('click',()=>{state.boatBuddy.maintenance=state.boatBuddy.maintenance.filter(x=>x.id!==b.dataset.maintDelete);save()}))}
+function renderLoadouts(){const list=document.getElementById('loadoutList'),items=state.boatBuddy.loadouts;if(!items.length){list.innerHTML='<div class="boat-empty">No saved loadouts yet.</div>';return}list.innerHTML=items.map(l=>`<div class="boat-list-item"><div class="boat-list-main"><strong>${escapeHtml(l.name)}</strong><small>${l.items.length} item${l.items.length===1?'':'s'}</small><div class="boat-chip">${escapeHtml(l.items.slice(0,3).join(' • '))}${l.items.length>3?'…':''}</div></div><button class="mini-btn" data-loadout-delete="${l.id}">Delete</button></div>`).join('');document.querySelectorAll('[data-loadout-delete]').forEach(b=>b.addEventListener('click',()=>{state.boatBuddy.loadouts=state.boatBuddy.loadouts.filter(x=>x.id!==b.dataset.loadoutDelete);save()}))}
+function renderBoatBuddy(){fillBoatProfile();renderBoatDashboard();renderBoatInventory();renderChecklist('launch',launchDefaults);renderChecklist('recovery',recoveryDefaults);renderMaintenance();renderLoadouts()}
+
+function renderAll(){renderStats();renderFeaturedPb();renderBoatBuddy();renderTackle();renderRods();renderReels();renderRigs();renderBoxes();renderCatches();renderPersonalBests();renderShopping();hydratePhotos();}
 function makeId(){
   if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
   return "pb-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,10);
