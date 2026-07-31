@@ -237,14 +237,14 @@ body { background:#eef3ee; }
 .boatbuddy-shell{display:grid;gap:14px}.boat-tabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.boat-tabs::-webkit-scrollbar{display:none}.boat-tab{flex:0 0 auto;border:1px solid var(--line);background:white;color:var(--green);border-radius:999px;padding:9px 13px;font-weight:850;font-size:12px}.boat-tab.active{background:var(--green);color:white;border-color:var(--green)}.boat-panel{display:none}.boat-panel.active{display:block}.boat-hero{border-radius:25px;padding:20px;color:white;background:linear-gradient(140deg,#0d3b35,#176659 70%,#a88d48 150%);box-shadow:0 12px 28px rgba(13,59,46,.17)}.boat-hero h2{margin:4px 0 2px;font-size:27px}.boat-status{display:flex;align-items:center;gap:8px;margin-top:14px;font-weight:900}.status-dot{width:11px;height:11px;border-radius:50%;background:#72d18c;box-shadow:0 0 0 5px rgba(114,209,140,.14)}.readiness-wrap{display:flex;align-items:center;gap:18px;margin-top:17px}.readiness-ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#d7bd72 var(--ready-angle,0deg),rgba(255,255,255,.18) 0);position:relative;flex:0 0 92px}.readiness-ring::after{content:"";position:absolute;inset:9px;border-radius:50%;background:#174f45}.readiness-ring strong{position:relative;z-index:1;font-size:24px}.readiness-meta{display:grid;gap:6px;font-size:13px;color:rgba(255,255,255,.88)}.boat-metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.boat-metric{background:white;border:1px solid var(--line);border-radius:18px;padding:14px}.boat-metric strong{display:block;color:var(--green);margin-bottom:3px}.boat-metric small{color:var(--muted)}.boat-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boat-action{border:0;border-radius:18px;background:white;padding:15px;text-align:left;box-shadow:0 4px 14px rgba(19,33,28,.07);color:var(--green);font-weight:900}.boat-action span{display:block;font-size:23px;margin-bottom:8px}.boat-section-card{background:white;border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px}.boat-section-card h3{margin:0 0 11px;color:var(--green)}.boat-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.boat-form-grid .field.full{grid-column:1/-1}.boat-list{display:grid;gap:9px}.boat-list-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:#f7f9f7;border:1px solid var(--line);border-radius:15px;padding:12px}.boat-list-main{min-width:0}.boat-list-main strong{display:block;color:var(--green)}.boat-list-main small{color:var(--muted)}.boat-list-actions{display:flex;gap:6px;flex:0 0 auto}.mini-btn{border:1px solid var(--line);background:white;border-radius:10px;padding:7px 9px;color:var(--green);font-weight:800;font-size:11px}.check-group{display:grid;gap:10px}.check-row{display:flex;align-items:center;gap:11px;padding:13px;border:1px solid var(--line);border-radius:15px;background:white}.check-row input{width:22px;height:22px;flex:0 0 22px}.check-row label{flex:1;font-weight:800;color:var(--green)}.check-row.done label{color:var(--muted);text-decoration:line-through}.check-phase{margin:16px 0 8px;font-size:12px;color:var(--muted);font-weight:900;letter-spacing:.8px}.boat-empty{border:1px dashed var(--line);border-radius:15px;padding:18px;color:var(--muted);text-align:center}.boat-progress{height:10px;background:#e9efeb;border-radius:999px;overflow:hidden;margin-top:8px}.boat-progress span{display:block;height:100%;background:var(--green);width:0}.boat-chip{display:inline-block;padding:4px 8px;border-radius:999px;background:#edf3ef;color:var(--green);font-size:10px;font-weight:900;margin-top:6px}@media(max-width:390px){.boat-form-grid,.boat-actions,.boat-metric-grid{grid-template-columns:1fr}.readiness-wrap{align-items:flex-start}}
 
 </style>
-  <title>PB — Personal Best v3.1</title>
+  <title>PB — Personal Best v3.1.1</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="topbar">
     <button class="logo-menu-button" id="logoMenuBtn" aria-label="Open PB menu">
       <img src="apple-touch-icon.png?v=30" alt="PB largemouth bass logo">
-      <span class="brand-stack"><span class="brand">PB</span><span class="subtitle">PERSONAL BEST <small style="opacity:.7">v3.1</small></span></span>
+      <span class="brand-stack"><span class="brand">PB</span><span class="subtitle">PERSONAL BEST <small style="opacity:.7">v3.1.1</small></span></span>
     </button>
     <div class="top-profile" aria-label="Angler profile">🎣</div>
   </header>
@@ -559,7 +559,7 @@ function createSnapshot() {
   }
 }
 function downloadBackup() {
-  const payload = {app:"PB Personal Best",version:"3.1",exportedAt:new Date().toISOString(),data:state};
+  const payload = {app:"PB Personal Best",version:"3.1.1",exportedAt:new Date().toISOString(),data:state};
   const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -614,12 +614,6 @@ function restoreLatestSnapshot() {
   Object.assign(state,restored);
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
   
-document.querySelectorAll('[data-boat-tab]').forEach(b=>b.addEventListener('click',()=>setBoatTab(b.dataset.boatTab)));document.querySelectorAll('[data-open-boat-tab]').forEach(b=>b.addEventListener('click',()=>setBoatTab(b.dataset.openBoatTab)));
-document.getElementById('saveBoatProfile').addEventListener('click',()=>{const p=state.boatBuddy.profile,ids={boatName:'name',boatType:'type',boatMake:'make',boatModel:'model',boatYear:'year',boatLength:'length',boatMotor:'motor',boatFuel:'fuel',boatBattery:'battery',boatRegistration:'registration',boatNotes:'notes'};Object.entries(ids).forEach(([id,k])=>p[k]=document.getElementById(id).value.trim());save();alert('Boat profile saved.')});
-document.getElementById('addBoatItem').addEventListener('click',()=>{const name=document.getElementById('boatItemName').value.trim();if(!name)return alert('Enter an equipment name.');state.boatBuddy.inventory.push({id:boatId(),name,category:document.getElementById('boatItemCategory').value,quantity:Math.max(1,Number(document.getElementById('boatItemQuantity').value)||1),status:document.getElementById('boatItemStatus').value});document.getElementById('boatItemName').value='';save()});
-document.getElementById('resetLaunchChecklist').addEventListener('click',()=>{state.boatBuddy.launch={};save()});document.getElementById('resetRecoveryChecklist').addEventListener('click',()=>{state.boatBuddy.recovery={};save()});
-document.getElementById('addMaintenance').addEventListener('click',()=>{const name=document.getElementById('maintenanceName').value.trim();if(!name)return alert('Enter a maintenance service.');state.boatBuddy.maintenance.push({id:boatId(),name,completed:document.getElementById('maintenanceCompleted').value,due:document.getElementById('maintenanceDue').value,cost:document.getElementById('maintenanceCost').value,notes:document.getElementById('maintenanceNotes').value.trim()});['maintenanceName','maintenanceCompleted','maintenanceDue','maintenanceCost','maintenanceNotes'].forEach(id=>document.getElementById(id).value='');save()});
-document.getElementById('addLoadout').addEventListener('click',()=>{const name=document.getElementById('loadoutName').value.trim(),items=document.getElementById('loadoutItems').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!name)return alert('Enter a loadout name.');state.boatBuddy.loadouts.push({id:boatId(),name,items});document.getElementById('loadoutName').value='';document.getElementById('loadoutItems').value='';save()});
 
 renderAll();
   updateSnapshotStatus();
@@ -1032,6 +1026,80 @@ document.getElementById("saveSpeciesBtn").addEventListener("click",()=>{
   save();
 });
 
+
+
+// BoatBuddy controls
+document.querySelectorAll("[data-boat-tab]").forEach(button => {
+  button.addEventListener("click", () => setBoatTab(button.dataset.boatTab));
+});
+document.querySelectorAll("[data-open-boat-tab]").forEach(button => {
+  button.addEventListener("click", () => setBoatTab(button.dataset.openBoatTab));
+});
+
+document.getElementById("saveBoatProfile")?.addEventListener("click", () => {
+  const profile = state.boatBuddy.profile;
+  const fields = {
+    boatName:"name", boatType:"type", boatMake:"make", boatModel:"model",
+    boatYear:"year", boatLength:"length", boatMotor:"motor", boatFuel:"fuel",
+    boatBattery:"battery", boatRegistration:"registration", boatNotes:"notes"
+  };
+  Object.entries(fields).forEach(([elementId, key]) => {
+    profile[key] = String(document.getElementById(elementId)?.value || "").trim();
+  });
+  save();
+  alert("Boat profile saved.");
+});
+
+document.getElementById("addBoatItem")?.addEventListener("click", () => {
+  const name = document.getElementById("boatItemName").value.trim();
+  if (!name) return alert("Enter an equipment name.");
+  state.boatBuddy.inventory.push({
+    id: boatId(),
+    name,
+    category: document.getElementById("boatItemCategory").value,
+    quantity: Math.max(1, Number(document.getElementById("boatItemQuantity").value) || 1),
+    status: document.getElementById("boatItemStatus").value
+  });
+  document.getElementById("boatItemName").value = "";
+  document.getElementById("boatItemQuantity").value = "1";
+  save();
+});
+
+document.getElementById("resetLaunchChecklist")?.addEventListener("click", () => {
+  state.boatBuddy.launch = {};
+  save();
+});
+document.getElementById("resetRecoveryChecklist")?.addEventListener("click", () => {
+  state.boatBuddy.recovery = {};
+  save();
+});
+
+document.getElementById("addMaintenance")?.addEventListener("click", () => {
+  const name = document.getElementById("maintenanceName").value.trim();
+  if (!name) return alert("Enter a maintenance service.");
+  state.boatBuddy.maintenance.push({
+    id: boatId(),
+    name,
+    completed: document.getElementById("maintenanceCompleted").value,
+    due: document.getElementById("maintenanceDue").value,
+    cost: document.getElementById("maintenanceCost").value,
+    notes: document.getElementById("maintenanceNotes").value.trim()
+  });
+  ["maintenanceName","maintenanceCompleted","maintenanceDue","maintenanceCost","maintenanceNotes"]
+    .forEach(id => document.getElementById(id).value = "");
+  save();
+});
+
+document.getElementById("addLoadout")?.addEventListener("click", () => {
+  const name = document.getElementById("loadoutName").value.trim();
+  const items = document.getElementById("loadoutItems").value
+    .split("\n").map(item => item.trim()).filter(Boolean);
+  if (!name) return alert("Enter a loadout name.");
+  state.boatBuddy.loadouts.push({id:boatId(), name, items});
+  document.getElementById("loadoutName").value = "";
+  document.getElementById("loadoutItems").value = "";
+  save();
+});
 
 window.addEventListener("load", async () => {
   try {
